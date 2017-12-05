@@ -2,6 +2,8 @@
 
 import sys
 from PyQt5.QtWidgets import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
 from PyQt5 import uic
 
 import inverter as inv
@@ -14,7 +16,7 @@ class InvWindow(QMainWindow, form_class):
         super().__init__()
         self.setupUi(self)          # UI Wiget의 생성 및 바인딩을 수행한다. 
         self.initializeUiSignal()   # UI Wiget의 Signal / Slot 을 설정한다.
-        #self.initializeDevice()
+        self.initializeDevice()     # Comm Port 초기화 및 Inverter의 상태를 읽어온다.
         
     def initializeDevice(self):
         self.inveter = inv.CInverter('COM4')
@@ -22,7 +24,39 @@ class InvWindow(QMainWindow, form_class):
 
     def updateInverterStatus(self):
         self.inveter.getInverStatus()
+        #for Debgging
         self.inveter.updateInverterStatus()
+        
+        data = "Model is LS {0}".format(self.inveter.Model)
+        self.textEdit_InvInfo.append(data)
+
+        data = "Power is {0:d}".format(self.inveter.power)
+        self.textEdit_InvInfo.append(data)
+
+        data = "Input Voltage is {0:d}".format(self.inveter.inputValtage)
+        self.textEdit_InvInfo.append(data)
+
+        data = "Software Version is {0}".format(self.inveter.version)
+        self.textEdit_InvInfo.append(data)
+
+        data = "Command Frequency is {0}".format(self.inveter.commandFreq)
+        self.textEdit_InvInfo.append(data)
+
+        data = "Operating Command is {0:x}".format(self.inveter.opCommand)
+        self.textEdit_InvInfo.append(data)
+
+        data = "Accelation time is {0}".format(self.inveter.accelTime)
+        self.textEdit_InvInfo.append(data)
+
+        data = "Decelation time is {0}".format(self.inveter.decelTime)
+        self.textEdit_InvInfo.append(data)
+
+        data = "Output Frequency is {0}".format(self.inveter.outputFreq)
+        self.textEdit_InvInfo.append(data)
+
+        data = "Motor RPM is {0}".format(self.inveter.rpm)
+        self.textEdit_InvInfo.append(data)
+
         
     def initializeUiSignal(self):
         # inverter button signal
@@ -45,17 +79,51 @@ class InvWindow(QMainWindow, form_class):
         # quit program signal
         self.pushButton_Exit.clicked.connect(self.btnClicked_Exit)
 
-        self.textEdit_Frq.textChanged.connect(self.textChanged_Frq)
+        self.lineEdit_Frq.setAlignment(Qt.AlignRight)
+        self.lineEdit_Frq.setText("100")
+        self.lineEdit_Frq.setValidator(QIntValidator(0, 100))
+        self.lineEdit_Frq.editingFinished.connect(self.textChanged_Frq)
+
+        self.lineEdit_AccTime.setAlignment(Qt.AlignRight)
+        self.lineEdit_AccTime.setText("-1.234")
+        self.lineEdit_AccTime.setValidator(QDoubleValidator(-10.000, 100.000, 3))
+        self.lineEdit_AccTime.editingFinished.connect(self.textChanged_AccTime)
+
+
+        self.lineEdit_DecTime.textChanged.connect(self.textChanged_DecTime)
+        self.lineEdit_OpTime.textChanged.connect(self.textChanged_OpTime)
+        self.lineEdit_Dist.textChanged.connect(self.textChanged_Dist)
+        self.lineEdit_OutVol.textChanged.connect(self.textChanged_OutVol)
+
+        self.textEdit_InvInfo.setReadOnly(True)
+        self.textEdit_InvInfo.setAlignment(Qt.AlignLeft)
+        self.textEdit_InvInfo.clear()
         
+
 
     def textChanged_Frq(self):
-        self.newFreq = self.textEdit_Frq.document()
-        print("------ New Current %s --------" % self.newFreq)
-        QMessageBox.about(self, self.newFreq, "변경")
+        newvalue = self.lineEdit_Frq.text()
+        print("------ New Current %s --------" % newvalue)
+        QMessageBox.about(self, "문자 변경", newvalue)
         
 
-    #def setupUi(self):
+    def textChanged_AccTime(self):
+        newvalue = self.lineEdit_AccTime.text()
+        print("------ New Current %s --------" % newvalue)
+        QMessageBox.about(self, "가속시간 변경", newvalue)
+ 
+    def textChanged_DecTime(self):
+        pass
 
+    def textChanged_OpTime(self):
+        pass
+
+    def textChanged_Dist(self):
+        pass
+
+    def textChanged_OutVol(self):
+        pass
+    
     # setup buttons slot 
     def btnClicked_FrontRun(self):
         QMessageBox.about(self, "정회전", "정회전 동작 시작")
