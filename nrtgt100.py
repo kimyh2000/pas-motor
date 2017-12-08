@@ -43,50 +43,84 @@ class CNRTGT100:
 
         dataFrame = []
 
+        """
+        self.ser.write(b'%')
+        self.ser.write(b'G')
+        self.ser.write(b'T')
+        self.ser.write(b'1')
+        self.ser.write(b'0')
+        self.ser.write(b'0')
+        self.ser.write(b'S')
+        self.ser.write(b'#')
+        """
+
         # index 0 ~ 7
-        dataFrame.append('%GT100S#'.encode())
+        #dataFrame.append('%GT100S#'.encode())
+        dataString = '%GT100S#'
+
+        
         # index 8
-        if commandType: # True = Command
-            dataFrame.append('W'.encode())
+        if commandType: # True = Commanddata
+            dataString += 'W'
         else:
-            dataFrame.append('M'.encode())
+            dataString += 'M'
+
+        print("dataString is {0}".format(dataString))
+
         # index 9
-        dataFrame.append(self.deviceID)
+        #dataFrame.append(self.deviceID)
+        dataString += str(self.deviceID)
         # index 10 ~ 12
         if commandType: # True = Command
-            dataFrame.append(self.opStstus[runCommand])     # Stop = 0x30, Run = 0x31
-            dataFrame.append(outPWM >> 8)   # Memory Address Hi
-            dataFrame.append(outPWM & 0xFF) # Memory Address Low
+            #dataFrame.append(self.opStstus[runCommand])     # Stop = 0x30, Run = 0x31
+            #dataFrame.append(outPWM >> 8)   # Memory Address Hi
+            #dataFrame.append(outPWM & 0xFF) # Memory Address Low
+            dataString += str(self.opStstus[runCommand])
+            dataString += str(outPWM >> 8)
+            dataString += str(outPWM >> 8)
         else:
-            dataFrame.append(0x30)
-            dataFrame.append(0)             # Memory Address Hi
-            dataFrame.append(0x30)          # Memory Address Low
+            #dataFrame.append(0x30)
+            #dataFrame.append(0)             # Memory Address Hi
+            #dataFrame.append(0x30)          # Memory Address Low
+            dataString += str(0x30)
+            dataString += str(0)
+            dataString += str(0x30)
+            
         # index 13 ~ 19
-        dataFrame.append(0)
-        dataFrame.append(0)
-        dataFrame.append(0)
-        dataFrame.append(0)
-        dataFrame.append(0)
-        dataFrame.append(0)
+        #dataFrame.append(0)
+        #dataFrame.append(0)
+        #dataFrame.append(0)
+        #dataFrame.append(0)
+        #dataFrame.append(0)
+        #dataFrame.append(0)     
         dataFrame.append(0x30)
+        dataString += '000000'
+        dataString += str(0x30)
 
         # BCC Checksum
         #bccFrame = dataFrame[9:]
-        bcc = self.bccCheckSum(dataFrame[9:])
+
+        # //bcc = self.bccCheckSum(dataFrame[9:])
+        
         #bcc = 0
         #for data in bccFrame:
         #    bcc ^= data
         # index 20 ~ 22
-        dataFrame.append(bcc)
-        dataFrame.append('\n\r'.encode())
-        
+        #dataFrame.append(bcc)
+        #dataFrame.append('\n\r'.encode())
+        dataString += '\n\r'
+        print(' %%%% dataString is {0} %%%%'.format(dataString))       
+
         print(dataFrame)
-        print(bytearray(dataFrame))
+        #print(bytearray(dataFrame))
         #print(self.ser)
 
-        self.ser.write(bytearray(dataFrame))
+        #self.ser.write(bytearray(dataFrame))
 
-        print("CNrtGT100 sendRequest end {0}, {1}".format(opCommand, outPWM))
+        self.ser.write(bytes(dataString.encode()))
+        #self.ser.write(bytes('%GT100S#'.encode()))
+        #self.ser.write(b'%GT100S#')
+        print("CNrtGT100 sendRequest end {0}, {1}".format(runCommand, outPWM))
 
     def getCommandResponse(self, BytesToRead = 14):    
         res = 'OK'

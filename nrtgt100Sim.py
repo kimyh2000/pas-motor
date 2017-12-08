@@ -40,25 +40,35 @@ class CNRTGT100Sim():
         
     def getCommMessage(self):    
 #       self.lock.acquire()
+        
         BytesToRead = self.ser.inWaiting()
 #        print("getCommMessage {0:d}".format(BytesToRead))
-        if BytesToRead < 7:
-            #print("readByte {0}".format(BytesToRead))
+        if BytesToRead < 1:
+            # print("readByte {0}".format(BytesToRead))
             time.sleep(0.7)     # 700 msec
             return
-
+        
         print("--------  Start Get Message ----------")    
 
-        readData = list(self.ser.read(BytesToRead))
-#        readData = list(self.ser.read())
+        #readData = list(self.ser.read(BytesToRead))
+        readData = self.ser.read(BytesToRead)
+        #BytesToRead = 8
 #        self.lock.release()
-        print(readData)
+        print("read Data is {0}, {1},  {2:d}".format(readData, readData.decode(), BytesToRead))
+
+        if readData.decode() == '%GT100S#':
+            print("Same")
+        else:
+            print("Different")
+        return
 
         if len(readData) == 0:
             print("read data is empty")
             return
 
         temp = "".join(readData[:8])
+        print("Get Message is {0}".format(temp))
+        return
 
         if temp != "%GT100S#":
             return       
