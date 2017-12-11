@@ -39,26 +39,11 @@ class CNRTGT100:
     #
     #
     def sendRequest(self, commandType, runCommand, outPWM = 0):
+        print('==============================================================================\n\r')
         print("CNRTGT100 sendRequest start {0}, {1}, {2}".format(commandType, runCommand, outPWM))
-
-        dataFrame = []
-
-        """
-        self.ser.write(b'%')
-        self.ser.write(b'G')
-        self.ser.write(b'T')
-        self.ser.write(b'1')
-        self.ser.write(b'0')
-        self.ser.write(b'0')
-        self.ser.write(b'S')
-        self.ser.write(b'#')
-        """
-
         # index 0 ~ 7
-        #dataFrame.append('%GT100S#'.encode())
         dataString = '%GT100S#'
 
-        
         # index 8
         if commandType: # True = Commanddata
             dataString += 'W'
@@ -66,110 +51,168 @@ class CNRTGT100:
             dataString += 'M'
 
         print("dataString is {0}".format(dataString))
+        self.ser.write(bytes(dataString.encode()))
 
         # index 9
-        #dataFrame.append(self.deviceID)
-        dataString += str(self.deviceID)
+        dataFrame = []
+
+        dataFrame.append(self.deviceID)
+        
         # index 10 ~ 12
         if commandType: # True = Command
-            #dataFrame.append(self.opStstus[runCommand])     # Stop = 0x30, Run = 0x31
-            #dataFrame.append(outPWM >> 8)   # Memory Address Hi
-            #dataFrame.append(outPWM & 0xFF) # Memory Address Low
-            dataString += str(self.opStstus[runCommand])
-            dataString += str(outPWM >> 8)
-            dataString += str(outPWM >> 8)
+            dataFrame.append(self.opStstus[runCommand])     # Stop = 0x30, Run = 0x31
+            dataFrame.append(outPWM >> 8)   # Memory Address Hi
+            dataFrame.append(outPWM & 0xFF) # Memory Address Low
         else:
-            #dataFrame.append(0x30)
-            #dataFrame.append(0)             # Memory Address Hi
-            #dataFrame.append(0x30)          # Memory Address Low
-            dataString += str(0x30)
-            dataString += str(0)
-            dataString += str(0x30)
+            dataFrame.append(0x30)
+            dataFrame.append(0)             # Memory Address Hi
+            dataFrame.append(0x30)          # Memory Address Low
             
         # index 13 ~ 19
-        #dataFrame.append(0)
-        #dataFrame.append(0)
-        #dataFrame.append(0)
-        #dataFrame.append(0)
-        #dataFrame.append(0)
-        #dataFrame.append(0)     
+        dataFrame.extend([0, 0, 0, 0, 0, 0])
         dataFrame.append(0x30)
-        dataString += '000000'
-        dataString += str(0x30)
 
         # BCC Checksum
-        #bccFrame = dataFrame[9:]
-
-        # //bcc = self.bccCheckSum(dataFrame[9:])
-        
-        #bcc = 0
-        #for data in bccFrame:
-        #    bcc ^= data
-        # index 20 ~ 22
-        #dataFrame.append(bcc)
-        #dataFrame.append('\n\r'.encode())
-        dataString += '\n\r'
-        print(' %%%% dataString is {0} %%%%'.format(dataString))       
-
+        bcc = self.bccCheckSum(dataFrame)
+        dataFrame.append(bcc)
         print(dataFrame)
-        #print(bytearray(dataFrame))
-        #print(self.ser)
+        
+        self.ser.write(bytearray(dataFrame))
 
-        #self.ser.write(bytearray(dataFrame))
-
+        dataString = '\n\r'
         self.ser.write(bytes(dataString.encode()))
-        #self.ser.write(bytes('%GT100S#'.encode()))
-        #self.ser.write(b'%GT100S#')
+
         print("CNrtGT100 sendRequest end {0}, {1}".format(runCommand, outPWM))
+
+        if commandType: # True = Commanddata
+            self.getCommandResponse()
+        else:
+            self.getMonitoringResponse()
+
+        print("CNrtGT100 Response end")
+        
 
     def getCommandResponse(self, BytesToRead = 14):    
         res = 'OK'
         
-        readData = list(self.ser.read(BytesToRead))
-        print("getCommandResponse ReadData ")
-        print(readData)
+        readData = self.ser.read(BytesToRead)
+        
+        print('==============================================================================\n\r')        
+        print("(1) read Data is {0}, {1},  {2:d}, Data receive OK !!!".format(readData, readData.decode(), BytesToRead))
 
-#        if len(readData) < BytesToRead:
-#            res = 'NG'
-        if len(readData) >= BytesToRead:
-            checkData = "".join(readData[:8])
-            if checkData == '%GT100S#':
-                if readData[8] == '$' and readData[9] == self.deviceID:
-                    bcc = self.bccCheckSum(readData[8:10])
-                    res = 'OK'
-                elif readData[8] == '!' and readData[9] == self.deviceID:
-                    res = 'NG'
-                else:
-                    res = 'NG'                    
-            else:
-                res = 'NG'
+        # For Debug
+        listReadData = list(readData)
+        print(listReadData)
 
-        return res
+        # 식별자
+        readNrtStr = readData[:8]
+        print(readNrtStr)
+        print(readNrtStr.decode()) 
+
+        # End Message    
+        readDataEnd = readData[12:]
+        if readDataEnd.decode() != '\n\r':
+            print("(2) readDataEnd is {0},{1}, Data receive ERROR !!!".format(readDataEnd, readDataEnd.decode()))
+            return 'NG'
+
+        print("(3) readDataEnd is {0},{1}, Data receive OK !!!".format(readDataEnd, readDataEnd.decode()))
+
+        if readNrtStr.decode() != '%GT100S#':
+            print("(4) NRTGT100 name is {0}, Data receive ERROR !!!".format(readNrtStr.decode()))
+            return 'NG'
+        
+        print("(5) NRTGT100 name is {0}, Data receive OK !!!".format(readNrtStr.decode()))
+
+        commandRes = readData[8:9]
+        command = commandRes.decode()
+        print("(6) Receive Command is {0}".format(command))
+
+        dataFrame = []
+        dataFrame.append(ord(command))
+        dataFrame.extend(list(readData[9:12]))
+        print(dataFrame)
+
+        if dataFrame[1] != self.deviceID:
+            print("(7) NRTGT100 device ID is {0:d}, Data receive ERROR !!!".format(dataFrame[1]))
+            return 'NG'
+
+        if command == '!':    # Command
+            print(" ERROR --- Received Illigal Message !!!")
+        elif command == '$':    # Command
+            print(" Good --- Received OK !!!")
+
+        temp = dataFrame[2:]
+        print(temp)
+        readBcc = temp[0] << 8
+        readBcc |= temp[1]
 
 
-    def getMonitoringResponse(self, BytesToRead = 22):    
+        print("Received BCC CheckSUm is {0:x}".format(readBcc))
+
+        bcc = self.bccCheckSum(dataFrame[0:2])
+        print("Sent BCC CheckSUm is {0:x}".format(bcc))
+
+        print("CNrtGT100 getCommMessage End")
+        print('==============================================================================\n\r')
+        return 'OK'    
+
+
+    def getMonitoringResponse(self, BytesToRead = 23):    
         res = 'OK'
         
-        readData = list(self.ser.read(BytesToRead))
-        print("getMonitoringResponse ReadData ")
-        print(readData)
+        readData = self.ser.read(BytesToRead)
+        print("read Data is {0}, {1},  {2:d}, Data receive OK !!!".format(readData, readData.decode(), BytesToRead))
 
-#        if len(readData) < BytesToRead:
-#            res = 'NG'
-        if len(readData) >= BytesToRead:
-            checkData = "".join(readData[:9])
-            if checkData == '%GT100S#M' and readData[9] == self.deviceID:
-                self.machineStus = readData[10] # STOP, RUN
-                temp = readData[11:13]
-                self.curPWM = temp[0] << 8
-                self.curPWM |= temp[1]                    
-                bcc = self.bccCheckSum(readData[9:20])
+        # For Debug
+        listReadData = list(readData)
+        print(listReadData)
 
-                res = 'OK'
-            else:
-                res = 'NG'
+        # 식별자
+        readNrtStr = readData[:8]
+        print(readNrtStr)
+        print(readNrtStr.decode()) 
 
-        return res    
+        # End Message    
+        readDataEnd = readData[21:]
+        if readDataEnd.decode() != '\n\r':
+            print("readDataEnd is {0},{1}, Data receive ERROR !!!".format(readDataEnd, readDataEnd.decode()))
+            return 'NG'
+
+        print("readDataEnd is {0},{1}, Data receive OK !!!".format(readDataEnd, readDataEnd.decode()))
+
+        if readNrtStr.decode() != '%GT100S#':
+            print("NRTGT100 name is {0}, Data receive ERROR !!!".format(readNrtStr.decode()))
+            return 'NG'
+        
+        print("NRTGT100 name is {0}, Data receive OK !!!".format(readNrtStr.decode()))
+
+        commandStr = readData[8:9]
+        command = commandStr.decode()
+        print("Receive Command is {0}".format(command))
+
+        dataFrame = list(readData[9:21])
+        print(dataFrame)
+
+        if dataFrame[0] != self.deviceID:
+            print("NRTGT100 device ID is {0:d}, Data receive ERROR !!!".format(dataFrame[0]))
+            return 'NG'
+
+        if command != 'M':    # Command
+            print(" ERROR --- Received Illigal Message !!!")
+            return 'NG'
+
+        self.machineStatus = dataFrame[1]    # Stop / Start
+        self.outPWM = dataFrame[3]
+
+        bcc = dataFrame[-1] 
+        print("Received BCC CheckSUm is {0:x}".format(bcc))
+
+        bcc = self.bccCheckSum(dataFrame[:11])
+        print("Sent BCC CheckSUm is {0:x}".format(bcc))
+
+        print("getMonitoringResponse End")
+
+        return 'OK'    
 
 
     def bccCheckSum(self, dataFrame):
@@ -178,7 +221,8 @@ class CNRTGT100:
         bcc = 0
         for data in dataFrame:
             bcc ^= data
+            #print(" BCC is {0:x}, {1:x}".format(data, bcc))
 
-        print(" BCC is {0:x}".format(bcc))
+        print(" Final BCC is {0:x}, {1}".format(bcc, bcc))
 
         return bcc

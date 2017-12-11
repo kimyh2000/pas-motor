@@ -15,11 +15,11 @@ def run():
     while True:
         menu = print_menu()
         if menu == 1:
-            nrtGT100.sendRequest(False, 0x30)
-        elif menu == 2:
-            nrtGT100.sendRequest(True, 0x31, 0x0F)
-        elif menu == 3:
-            nrtGT100.sendRequest(True, 0x30, 0x11)
+            nrtGT100.sendRequest(False, 0)
+        elif menu == 2: # Start
+            nrtGT100.sendRequest(True, 1, 235)  #23.5 V
+        elif menu == 3: # Stop
+            nrtGT100.sendRequest(True, 0, 179) #
         elif menu == 4:
             break
 
