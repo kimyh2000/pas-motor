@@ -1,5 +1,5 @@
 
-
+import logger as log
 import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
@@ -103,13 +103,13 @@ class InvWindow(QMainWindow, form_class):
 
     def textChanged_Frq(self):
         newvalue = self.lineEdit_Frq.text()
-        print("------ New Current %s --------" % newvalue)
+        log.logger.debug("------ New Current {0} --------".format(newvalue))
         QMessageBox.about(self, "문자 변경", newvalue)
         
 
     def textChanged_AccTime(self):
         newvalue = self.lineEdit_AccTime.text()
-        print("------ New Current %s --------" % newvalue)
+        log.logger.debug("------ New Current {0} --------".format(newvalue))
         QMessageBox.about(self, "가속시간 변경", newvalue)
  
     def textChanged_DecTime(self):

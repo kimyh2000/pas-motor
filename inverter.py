@@ -1,4 +1,4 @@
-
+import logger as log
 import serial
 import time
 import modbusCRC
@@ -66,7 +66,7 @@ inverOpStatus = {
 
 class CInverter:
     def __init__(self, commPort):
-        print("(1) comport {0}".format(commPort))
+        log.logger.debug("(1) comport {0}".format(commPort))
         self.Model = ''
         self.power = 0xFFFF     #04. kW
         self.inputValtage = 0   # 0 : 220V, 1 : 440V
@@ -78,10 +78,10 @@ class CInverter:
         self.outputFreq = 0
         self.rpm = 0
         self.initSerialComm(commPort)
-        print("CInverter __init__")
+        log.logger.debug("CInverter __init__")
 
     def initSerialComm(self, commPort):
-        print("(2) comport {0}".format(commPort))
+        log.logger.debug("(2) comport {0}".format(commPort))
         self.ser = serial.Serial()
         self.ser.port = commPort     # 'COM4'
         self.ser.baudrate = 9600 
@@ -92,12 +92,12 @@ class CInverter:
         self.ser.write_timeout = 5   # 5 sec        
 
         if self.ser._isOpen == False:
-            print("Serial Port is not Open")
+            log.logger.debug("Serial Port is not Open")
             self.ser.open()
-            print("Serial Port is Open {0}".format(self.ser._isOpen))
+            log.logger.debug("Serial Port is Open {0}".format(self.ser._isOpen))
 
-        print(self.ser)            
-        print("CInverter Initialize serial comm")
+        log.logger.debug(self.ser)            
+        log.logger.debug("CInverter Initialize serial comm")
 
     def getInverStatus(self):
         res = 'OK'
@@ -181,12 +181,12 @@ class CInverter:
             return res
         self.rpm = readData 
 
-        print("CInverter getInverStatus")
+        log.logger.debug("CInverter getInverStatus")
 
         return res
 
     def sendRequest(self, readMem, regCount=1):
-        print("CInverter sendRequest start {0}".format(readMem))
+        log.logger.debug("CInverter sendRequest start {0}".format(readMem))
 
         dataFrame = []
         dataFrame.append(slaveDevice['inverterLS'])        # Slave No.
@@ -203,13 +203,13 @@ class CInverter:
         dataFrame.append(crc & 0xFF)        # CRC Low
         dataFrame.append(crc >> 8)          # CRC Hi
 
-        print(dataFrame)
-        print(bytearray(dataFrame))
-        #print(self.ser)
+        log.logger.debug(dataFrame)
+        log.logger.debug(bytearray(dataFrame))
+        #log.logger.debug(self.ser)
 
         self.ser.write(bytearray(dataFrame))
 
-        print("CInverter sendRequest end {0}".format(readMem))
+        log.logger.debug("CInverter sendRequest end {0}".format(readMem))
 
 
     #
@@ -224,8 +224,8 @@ class CInverter:
         
         readData = [0x01, 0x04, 0x02, 0x12, 0x34, 0xA1, 0xB1]
         readData = list(self.ser.read(BytesToRead))
-        print("getResponse ReadData ")
-        print(readData)
+        log.logger.debug("getResponse ReadData ")
+        log.logger.debug(readData)
 
 #        if len(readData) < BytesToRead:
 #            res = 'NG'
@@ -239,7 +239,7 @@ class CInverter:
                 readValue = temp[0] << 8
                 readValue |= temp[1]
             
-            print("CInverter getResponse")
+            log.logger.debug("CInverter getResponse")
         else:
             res = 'NG'
 
@@ -270,11 +270,11 @@ class CInverter:
         dataFrame.append(crc & 0xFF)        # CRC Low
         dataFrame.append(crc >> 8)          # CRC Hi
 
-        print(dataFrame)
-        print(bytearray(dataFrame))
+        log.logger.debug(dataFrame)
+        log.logger.debug(bytearray(dataFrame))
         self.ser.write(bytearray(dataFrame))
 
-        print("CInverter sendWriteData")
+        log.logger.debug("CInverter sendWriteData")
 
     #
     # get response from Inverter
@@ -294,7 +294,7 @@ class CInverter:
         if readData[0] != slaveDevice['inverterLS'] or readData[1] != FunctionCode['presetMultiReg']:
             res = 'NG'
 
-        print("CInverter getWriteResponse")       
+        log.logger.debug("CInverter getWriteResponse")       
         
         return res
 
@@ -312,7 +312,7 @@ class CInverter:
                 self.sendWriteData('OpCommand', opCommand)
                 res = self.getWriteResponse()
         
-        print("CInverter runMotor {0}".format(direction)) 
+        log.logger.debug("CInverter runMotor {0}".format(direction)) 
 
         return res        
         
@@ -328,37 +328,37 @@ class CInverter:
             self.sendWriteData('OpCommand', opCommand)
             res = self.getWriteResponse()
         
-        print("CInverter motorStop {0}".format(emgStop)) 
+        log.logger.debug("CInverter motorStop {0}".format(emgStop)) 
 
         return res 
 
     def motorFaultReset(self):
         self.sendRequest('OpCommand')
         res, opCommand = self.getResponse()
-        print("Before : motorFaultReset{0} {1:x}".format(res, opCommand))
+        log.logger.debug("Before : motorFaultReset{0} {1:x}".format(res, opCommand))
 
         if res == 'OK':
             opCommand |= inverOpCommand['FaultReset']
             self.sendWriteData('OpCommand', opCommand)
             res = self.getWriteResponse()
 
-        print("After : motorFaultReset{0} {1:x}".format(res, opCommand))
-        print("CInverter motorFaultReset")         
+        log.logger.debug("After : motorFaultReset{0} {1:x}".format(res, opCommand))
+        log.logger.debug("CInverter motorFaultReset")         
         return res 
 
 
     def updateInverterStatus(self):
-        print("CInverter motorFaultReset")         
-        print("Model {0}".format(self.Model))
-        print("Power {0:x}".format(self.power))
-        print("Input Voltage {0:d}".format(self.inputValtage))
-        print("Version {0:x}".format(self.version))
-        print("Command Freq {0:d}".format(self.commandFreq))
-        print("OP Command {0:x}".format(self.opCommand))
-        print("Accel Time {0:d}".format(self.accelTime))
-        print("Decel Time {0:d}".format(self.decelTime))
-        print("Output Freq {0:d}".format(self.outputFreq))
-        print("RPM {0:d}".format(self.rpm))
+        log.logger.debug("CInverter motorFaultReset")         
+        log.logger.debug("Model {0}".format(self.Model))
+        log.logger.debug("Power {0:x}".format(self.power))
+        log.logger.debug("Input Voltage {0:d}".format(self.inputValtage))
+        log.logger.debug("Version {0:x}".format(self.version))
+        log.logger.debug("Command Freq {0:d}".format(self.commandFreq))
+        log.logger.debug("OP Command {0:x}".format(self.opCommand))
+        log.logger.debug("Accel Time {0:d}".format(self.accelTime))
+        log.logger.debug("Decel Time {0:d}".format(self.decelTime))
+        log.logger.debug("Output Freq {0:d}".format(self.outputFreq))
+        log.logger.debug("RPM {0:d}".format(self.rpm))
 #        return  self.Model, self.power, self.inputValtage, \n
 #                self.version, self.commandFreq, self.opCommand, \n
 #                self.accelTime, self.decelTime, self.outputFreq, self.rpm

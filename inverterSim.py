@@ -1,4 +1,4 @@
-
+import logger as log
 import threading
 import serial
 import time
@@ -91,7 +91,7 @@ class CInverterSim():
 
         self.initSerialComm(commPort)
 
-        print("CInverterSim __init__")
+        log.logger.debug("CInverterSim __init__")
 
 #    def stop(self):
 #        self._stop.set()
@@ -114,32 +114,32 @@ class CInverterSim():
         self.ser.write_timeout = 5   # 5 sec        
 
         if self.ser._isOpen == False:
-            print("Serial Port is not Open")
+            log.logger.debug("Serial Port is not Open")
             self.ser.open()
-            print("Serial Port is Open {0}".format(self.ser._isOpen))
+            log.logger.debug("Serial Port is Open {0}".format(self.ser._isOpen))
 
-        print(self.ser)
-        print("CInverterSim Initialize serial comm")
+        log.logger.debug(self.ser)
+        log.logger.debug("CInverterSim Initialize serial comm")
        
         
     def getCommMessage(self):    
 #       self.lock.acquire()
         BytesToRead = self.ser.inWaiting()
-#        print("getCommMessage {0:d}".format(BytesToRead))
+#        log.logger.debug("getCommMessage {0:d}".format(BytesToRead))
         if BytesToRead < 2:
-            #print("readByte {0}".format(BytesToRead))
+            #log.logger.debug("readByte {0}".format(BytesToRead))
             time.sleep(0.7)     # 700 msec
             return
 
-        print("--------  Start Get Message ----------")    
+        log.logger.debug("--------  Start Get Message ----------")    
 
         readData = list(self.ser.read(BytesToRead))
 #        readData = list(self.ser.read())
 #        self.lock.release()
-        print(readData)
+        log.logger.debug(readData)
 
         if len(readData) == 0:
-            print("read data is empty")
+            log.logger.debug("read data is empty")
             return
 
         if readData[0] == slaveDevice['inverterLS']:
@@ -152,15 +152,15 @@ class CInverterSim():
                 commandData = self.make1Byte(readData[7:9])
                 res = self.sendResponseCommand(param, regCount, commandData)
             else:
-                print("Illigal Function Code !!!")    
+                log.logger.debug("Illigal Function Code !!!")    
         else:
-            print("Illigal Slave Devie !!!")    
+            log.logger.debug("Illigal Slave Devie !!!")    
         
-        print("CInverterSim getCommMessage End")
+        log.logger.debug("CInverterSim getCommMessage End")
 
     def sendResponseStatus(self, param, byteCount=2):
         
-        print("--------  Start sendResponseStatus ----------")   
+        log.logger.debug("--------  Start sendResponseStatus ----------")   
 
         dataFrame = []
         dataFrame.append(slaveDevice['inverterLS'])        # Slave No.
@@ -168,37 +168,37 @@ class CInverterSim():
     
         dataFrame.append(byteCount)
 
-        print(" param {0:x}".format(param))
+        log.logger.debug(" param {0:x}".format(param))
 
         if param == inverParamList['Model']:
-            print(" RaramList {0:x}".format(inverParamList['Model']))
+            log.logger.debug(" RaramList {0:x}".format(inverParamList['Model']))
             responseData = ord('A')      #iG5A
         elif param == inverParamList['Power']:
-            print(" RaramList {0:x}".format(inverParamList['Power']))
+            log.logger.debug(" RaramList {0:x}".format(inverParamList['Power']))
             responseData = 0x0003   #2.2kW
         elif param == inverParamList['InputVol']:
-            print(" RaramList {0:x}".format(inverParamList['InputVol']))
+            log.logger.debug(" RaramList {0:x}".format(inverParamList['InputVol']))
             responseData = 0        # 0 : 220V, 1 : 440V
         elif param == inverParamList['Version']:
-            print(" RaramList {0:x}".format(inverParamList['Version']))
+            log.logger.debug(" RaramList {0:x}".format(inverParamList['Version']))
             responseData = 0x0022   # Verion 2.2
         elif param == inverParamList['ParamSet']:
-            print(" RaramList {0:x}".format(inverParamList['ParamSet']))
+            log.logger.debug(" RaramList {0:x}".format(inverParamList['ParamSet']))
             responseData = 1        # 통신 설정
         elif param == inverParamList['CommandFreq']:
-            print(" RaramList {0:x}".format(inverParamList['CommandFreq']))
+            log.logger.debug(" RaramList {0:x}".format(inverParamList['CommandFreq']))
             responseData = 100
         elif param == inverParamList['OpCommand']:
-            print(" RaramList {0:x}".format(inverParamList['OpCommand']))
+            log.logger.debug(" RaramList {0:x}".format(inverParamList['OpCommand']))
             responseData = 0x0041   # 통신 설정, 정지
         elif param == inverParamList['AccelTime']:
-            print(" RaramList {0:x}".format(inverParamList['AccelTime']))
+            log.logger.debug(" RaramList {0:x}".format(inverParamList['AccelTime']))
             responseData = 10
         elif param == inverParamList['DecelTime']:
-            print(" RaramList {0:x}".format(inverParamList['DecelTime']))
+            log.logger.debug(" RaramList {0:x}".format(inverParamList['DecelTime']))
             responseData = 20
         elif param == inverParamList['OutputCurrent']:
-            print(" RaramList {0:x}".format(inverParamList['OutputCurrent']))
+            log.logger.debug(" RaramList {0:x}".format(inverParamList['OutputCurrent']))
             responseData = 50
         elif param == inverParamList['OutputFreq']:
             responseData = 60
@@ -218,16 +218,16 @@ class CInverterSim():
         dataFrame.append(crc & 0xFF)        # CRC Low
         dataFrame.append(crc >> 8)          # CRC Hi
 
-        print(dataFrame)
-        print(bytearray(dataFrame))
+        log.logger.debug(dataFrame)
+        log.logger.debug(bytearray(dataFrame))
 #       self.lock.acquire()
         self.ser.write(bytearray(dataFrame))
 #       self.lock.release()    
 
-        print("CInverterSim sendResponseStatus")
+        log.logger.debug("CInverterSim sendResponseStatus")
 
     def sendResponseCommand(self, param, regCount, commandData):
-        print("--------  Start sendResponseCommand ----------")   
+        log.logger.debug("--------  Start sendResponseCommand ----------")   
         
         dataFrame = []
         dataFrame.append(slaveDevice['inverterLS'])         # Slave No.
@@ -243,35 +243,35 @@ class CInverterSim():
         dataFrame.append(crc & 0xFF)        # CRC Low
         dataFrame.append(crc >> 8)          # CRC Hi
 
-        print(dataFrame)
-        print(bytearray(dataFrame))
+        log.logger.debug(dataFrame)
+        log.logger.debug(bytearray(dataFrame))
         self.ser.write(bytearray(dataFrame))        
         
-        print(" param {0:x}".format(param))
-        print(" commandData {0:x}".format(commandData))
+        log.logger.debug(" param {0:x}".format(param))
+        log.logger.debug(" commandData {0:x}".format(commandData))
 
         if param == inverParamList['ParamSet']:
-            print(" RaramList {0:x}".format(inverParamList['ParamSet']))
+            log.logger.debug(" RaramList {0:x}".format(inverParamList['ParamSet']))
             pass
         elif param == inverParamList['CommandFreq']:
-            print(" RaramList {0:x}".format(inverParamList['CommandFreq']))
+            log.logger.debug(" RaramList {0:x}".format(inverParamList['CommandFreq']))
             self.commandFreq = commandData
         elif param == inverParamList['OpCommand']:
-            print(" RaramList {0:x}".format(inverParamList['OpCommand']))
+            log.logger.debug(" RaramList {0:x}".format(inverParamList['OpCommand']))
             self.opCommand = commandData
         elif param == inverParamList['AccelTime']:
-            print(" RaramList {0:x}".format(inverParamList['AccelTime']))
+            log.logger.debug(" RaramList {0:x}".format(inverParamList['AccelTime']))
             self.accelTime = commandData
         elif param == inverParamList['DecelTime']:
-            print(" RaramList {0:x}".format(inverParamList['DecelTime']))
+            log.logger.debug(" RaramList {0:x}".format(inverParamList['DecelTime']))
             self.decelTime = commandData
         else:
             pass
 
-        print("CInverterSim sendResponseCommand")
+        log.logger.debug("CInverterSim sendResponseCommand")
 
     def make1Byte(self, tempdata):
-        print(tempdata)
+        log.logger.debug(tempdata)
         byteData = tempdata[0] << 8
         byteData |= tempdata[1]
         return byteData
@@ -286,5 +286,5 @@ if __name__ == "__main__":
         res = invSim.getCommMessage()
 #        res = invSim.getCommMessage()
 #        if res == True:
-#            print("Program end")
+#            log.logger.debug("Program end")
 #            break
