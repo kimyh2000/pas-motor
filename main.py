@@ -19,8 +19,8 @@ class InvWindow(QMainWindow, form_class):
         self.initializeDevice()     # Comm Port 초기화 및 Inverter의 상태를 읽어온다.
         
     def initializeDevice(self):
-        self.inveter = inv.CInverter('COM4')
-        self.updateInverterStatus()
+        self.inveter = inv.CInverter('COM3')
+        #self.updateInverterStatus()
 
     def updateInverterStatus(self):
         self.inveter.getInverStatus()
@@ -60,6 +60,7 @@ class InvWindow(QMainWindow, form_class):
         
     def initializeUiSignal(self):
         # inverter button signal
+        self.pushButton_Update.clicked.connect(self.btnClicked_Update)
         self.pushButton_FrontRun.clicked.connect(self.btnClicked_FrontRun)
         self.pushButton_BackRun.clicked.connect(self.btnClicked_BackRun)
         self.pushButton_Stop.clicked.connect(self.btnClicked_Stop)
@@ -125,6 +126,9 @@ class InvWindow(QMainWindow, form_class):
         pass
     
     # setup buttons slot 
+    def btnClicked_Update(self):
+        self.updateInverterStatus()
+    
     def btnClicked_FrontRun(self):
         QMessageBox.about(self, "정회전", "정회전 동작 시작")
         self.inveter.runMotor(True)
@@ -182,7 +186,7 @@ def print_menu():
     return int(menu)
 
 def run():
-    inveter = inv.CInverter('COM4')
+    inveter = inv.CInverter('COM3')
 
     while True:
         menu = print_menu()
