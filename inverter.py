@@ -91,10 +91,10 @@ class CInverter:
         self.ser.timeout = 5         # 5 sec
         self.ser.write_timeout = 5   # 5 sec        
 
-        if self.ser._isOpen == False:
-            log.logger.debug("Serial Port is not Open")
-            self.ser.open()
-            log.logger.debug("Serial Port is Open {0}".format(self.ser._isOpen))
+        #if self.ser._isOpen == False:
+        #    log.logger.debug("Serial Port is not Open")
+        self.ser.open()
+        #    log.logger.debug("Serial Port is Open {0}".format(self.ser._isOpen))
 
         log.logger.debug(self.ser)            
         log.logger.debug("CInverter Initialize serial comm")
@@ -209,7 +209,7 @@ class CInverter:
 
         self.ser.write(bytearray(dataFrame))
 
-        log.logger.debug("CInverter sendRequest end {0}".format(readMem))
+        log.logger.debug("#############  CInverter sendRequest end {0}".format(readMem))
 
 
     #
@@ -222,9 +222,11 @@ class CInverter:
         res = 'OK'
         readValue = 0;
         
-        readData = [0x01, 0x04, 0x02, 0x12, 0x34, 0xA1, 0xB1]
-        readData = list(self.ser.read(BytesToRead))
-        log.logger.debug("getResponse ReadData ")
+        #readData = [0x01, 0x04, 0x02, 0x12, 0x34, 0xA1, 0xB1]
+        readByteData = self.ser.read(BytesToRead)
+        readData = list(readByteData)
+        log.logger.debug("getResponse ReadData {0}, {1}".format(len(readByteData), len(readData)))
+        log.logger.debug(readByteData.decode())
         log.logger.debug(readData)
 
 #        if len(readData) < BytesToRead:
@@ -239,7 +241,7 @@ class CInverter:
                 readValue = temp[0] << 8
                 readValue |= temp[1]
             
-            log.logger.debug("CInverter getResponse")
+            log.logger.debug("$$$$$$$$$$$  CInverter getResponse is {0}, Data is {1}".format(res, readValue))
         else:
             res = 'NG'
 
@@ -294,7 +296,7 @@ class CInverter:
         if readData[0] != slaveDevice['inverterLS'] or readData[1] != FunctionCode['presetMultiReg']:
             res = 'NG'
 
-        log.logger.debug("CInverter getWriteResponse")       
+        log.logger.debug("-----------CInverter getWriteResponse is {0}".format(res))       
         
         return res
 
