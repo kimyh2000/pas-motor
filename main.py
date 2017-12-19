@@ -19,7 +19,7 @@ class InvWindow(QMainWindow, form_class):
         self.initializeDevice()     # Comm Port 초기화 및 Inverter의 상태를 읽어온다.
         
     def initializeDevice(self):
-        self.inveter = inv.CInverter('COM3')
+        self.inveter = inv.CInverter('COM4')
         #self.updateInverterStatus()
 
     def updateInverterStatus(self):
@@ -106,6 +106,7 @@ class InvWindow(QMainWindow, form_class):
         newvalue = self.lineEdit_Frq.text()
         log.logger.debug("------ New Current {0} --------".format(newvalue))
         QMessageBox.about(self, "문자 변경", newvalue)
+        self.inveter.sendParameter('CommandFreq', 2000)
         
 
     def textChanged_AccTime(self):
