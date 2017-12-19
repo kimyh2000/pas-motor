@@ -45,13 +45,19 @@ inverParamList = {
     'AccelTime'         : 0x0383,       #R/W
     'DecelTime'         : 0x0384,       #R/W
 }
-
+"""
 inverOpCommand = {
     'Stop'              : 0b00000001,   # 0 : Stop, 1 : Run
     'F_Run'             : 0b00000010,   # 0 : R,    1 : F
-    'Trip_Rerset'       : 0b00000100,   # 1 : Trip Reset 
-    'FreeRun_Stop'      : 0b00001000,   # 1 : Free Run Stop
-#    'EmgStop'           : 0b00010000
+    'Trip_Rerset'       : 0b00000100,   # 1 : Trip Reset  (Error Reset)
+    'FreeRun_Stop'      : 0b00001000,   # 1 : Free Run Stop (EMG Stop)
+}
+"""
+inverOpCommand = {
+    'Stop'              : 1,   # 0 : Stop, 1 : Run
+    'F_Run'             : 2,   # 0 : R,    1 : F
+    'Trip_Rerset'       : 3,   # 1 : Trip Reset  (Error Reset)
+    'FreeRun_Stop'      : 4,   # 1 : Free Run Stop (EMG Stop)
 }
 
 inverOpStatus = {
@@ -64,12 +70,15 @@ inverOpStatus = {
     'DCBracking'        : 0b01000000,
 }
 
+InvRun = 1
+InvRFRun = 2
+InvTripReset = 3
+InvFreeRunStop = 4
 
 class CInverter:
     def __init__(self, commPort):
-        log.logger.debug("(1) comport {0}".format(commPort))
-        self.Model = ''
-        self.power = 0xFFFF     #04. kW
+        self.Model = 0
+        self.power = 0          #04. kW
         self.inputValtage = 0   # 0 : 220V, 1 : 440V
         self.version = 0x0000
         self.status = 0
@@ -82,13 +91,13 @@ class CInverter:
         self.opCommand = 0x0000
         self.accelTime = 0
         self.decelTime = 0
-        self.initSerialComm(commPort)
-        log.logger.debug("CInverter __init__")
+        #self.initSerialComm(commPort)
+        log.logger.debug("CInverter __init__ Complete")
 
     def initSerialComm(self, commPort):
-        log.logger.debug("(2) comport {0}".format(commPort))
+        log.logger.debug("CInverter comport is {0}".format(commPort))
         self.ser = serial.Serial()
-        self.ser.port = commPort     # 'COM4'
+        self.ser.port = commPort
         self.ser.baudrate = 9600 
         self.ser.bytesize = 8
         self.ser.parity = 'N'        
@@ -102,9 +111,9 @@ class CInverter:
             log.logger.debug("Serial Port is Open {0}".format(self.ser.isOpen()))
 
         log.logger.debug(self.ser)            
-        log.logger.debug("CInverter Initialize serial comm")
+        log.logger.debug("CInverter Initialize serial comm port complete")
 
-    def getInverStatus(self):
+    def getInverterStatus(self):
         res = 'OK'
         
         # get Inverter Model
@@ -113,7 +122,7 @@ class CInverter:
         if res == 'NG':
             return res
         self.Model = readData
-        time.sleep(0.7)     # 100 msec
+        time.sleep(0.7)     # 700 msec
 
         # get Inverter Power
         self.sendRequest('Power')
@@ -139,7 +148,7 @@ class CInverter:
         self.version = readData 
         time.sleep(0.7)
 
-       # get Inverter Version
+       # get Inverter Operation Status
         self.sendRequest('OpStatus')
         res, readData = self.getResponse()
         if res == 'NG':
@@ -147,7 +156,7 @@ class CInverter:
         self.status = readData 
         time.sleep(0.7)
 
-        # get Inverter Output Frequency
+        # get Inverter Output Current
         self.sendRequest('OutputCurrent')
         res, readData = self.getResponse()
         if res == 'NG':  
@@ -190,7 +199,6 @@ class CInverter:
         res, readData = self.getResponse()
         if res == 'NG':  
             return res
-
         time.sleep(0.7)    
 
         # get Inverter Accelation Time
@@ -209,7 +217,7 @@ class CInverter:
         self.decelTime = readData 
         time.sleep(0.7)
             
-        log.logger.debug("CInverter getInverStatus")
+        log.logger.debug("CInverter getInverterStatus")
 
         return res
 
@@ -343,26 +351,41 @@ class CInverter:
         
         return res
 
+    def isBitOn(data, bit):
+        data &= (0x01 << bit)
+        return data
+
+    def bitSet(data, bit, bitOn):
+        if bitOn:   
+            data |= (0x01 << bit)
+        else:
+            data &= ~(0x01 << bit)
+
+        return data
+
+
     def runMotor(self, direction = True):
         self.sendRequest('OpCommand')
         res, opCommand = self.getResponse()
         log.logger.debug("(1) CInverter runMotor {0}, {1:x}".format(opCommand, opCommand)) 
         
         if res == 'OK':
-            if (opCommand & inverOpCommand['Stop'] == 0): 
-                log.logger.debug("(2) CInverter runMotor was Stop") 
+            if self.isBitOn(opCommand, InvRun): 
+                log.logger.debug("(2) CInverter Motor is already Running") 
+                return
                 
-                if direction == True:
-                    #opCommand |= inverOpCommand['F_Run']
-                    opCommand |= 0x0011
-                    log.logger.debug("(3) CInverter runMotor {0}, {1:x}".format(opCommand, opCommand)) 
-                #else:
-                #    opCommand |= inverOpCommand['R_Run']
-                    
-                wData, count = self.sendWriteData('OpCommand', opCommand)
-                res = self.getWriteResponse(wData, count)
+            if direction == True:
+                opCommand = self.bitSet(InvRFRun, True)
+            else:
+                opCommand = self.bitSet(InvRFRun, False)
+
+            opCommand = self.bitSet(InvRun, True)
+            log.logger.debug("(3) CInverter runMotor {0}, {1:x}".format(opCommand, opCommand)) 
+                
+            wData, count = self.sendWriteData('OpCommand', opCommand)
+            res = self.getWriteResponse(wData, count)
         
-        log.logger.debug("CInverter runMotor {0}".format(direction)) 
+            log.logger.debug("CInverter runMotor : Motor Run, Direction {0}".format(direction)) 
 
         return res        
         
@@ -372,17 +395,19 @@ class CInverter:
         log.logger.debug("(1) CInverter motorStop {0}, {1:x}".format(opCommand, opCommand)) 
         
         if res == 'OK':
-            #if emgStop == True:
-            #    opCommand |= inverOpCommand['EmgStop']
-            #else:
-            #opCommand &= inverOpCommand['Stop']
-            opCommand = 0
+            if emgStop == True:
+                opCommand = self.bitSet(opCommand, InvFreeRunStop, True)
+            else:
+                opCommand = self.bitSet(opCommand, InvFreeRunStop, False)
+                
+            opCommand = self.bitSet(opCommand, InvRun, False)
+
             log.logger.debug("(2) CInverter motorStop {0}, {1:x}".format(opCommand, opCommand)) 
                 
             wData, count = self.sendWriteData('OpCommand', opCommand)
             res = self.getWriteResponse(wData, count)
         
-        log.logger.debug("CInverter motorStop {0}".format(emgStop)) 
+            log.logger.debug("CInverter motorStop : Free Reset is {0}".format(emgStop)) 
 
         return res 
 
@@ -392,7 +417,12 @@ class CInverter:
         log.logger.debug("Before : motorFaultReset{0} {1:x}".format(res, opCommand))
 
         if res == 'OK':
-            opCommand |= inverOpCommand['FaultReset']
+            if self.isBitOn(opCommand, InvRun): 
+                log.logger.debug("CInverter Motor is already Running") 
+                return
+            
+            opCommand = self.bitSet(opCommand, InvTripReset, True)
+
             wData, count = self.sendWriteData('OpCommand', opCommand)
             res = self.getWriteResponse(wData, count)
 

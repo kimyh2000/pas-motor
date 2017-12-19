@@ -23,7 +23,7 @@ class InvWindow(QMainWindow, form_class):
         #self.updateInverterStatus()
 
     def updateInverterStatus(self):
-        self.inveter.getInverStatus()
+        self.inveter.getInverterStatus()
         #for Debgging
         self.inveter.updateInverterStatus()
         
@@ -81,17 +81,20 @@ class InvWindow(QMainWindow, form_class):
         self.pushButton_Exit.clicked.connect(self.btnClicked_Exit)
 
         self.lineEdit_Frq.setAlignment(Qt.AlignRight)
-        self.lineEdit_Frq.setText("100")
-        self.lineEdit_Frq.setValidator(QIntValidator(0, 100))
+        self.lineEdit_Frq.setText("40.00")  # Default Value : 40.00 Hz
+        self.lineEdit_Frq.setValidator(QDoubleValidator(0.00, 60.00, 2))    # 0.00 Hz : Min, 60.00 Hz : Max
         self.lineEdit_Frq.editingFinished.connect(self.textChanged_Frq)
 
         self.lineEdit_AccTime.setAlignment(Qt.AlignRight)
-        self.lineEdit_AccTime.setText("-1.234")
-        self.lineEdit_AccTime.setValidator(QDoubleValidator(-10.000, 100.000, 3))
+        self.lineEdit_AccTime.setText("5")
+        self.lineEdit_AccTime.setValidator(QIntValidator(0, 6000))
         self.lineEdit_AccTime.editingFinished.connect(self.textChanged_AccTime)
 
+        self.lineEdit_DecTime.setAlignment(Qt.AlignRight)
+        self.lineEdit_DecTime.setText("10")
+        self.lineEdit_DecTime.setValidator(QIntValidator(0, 6000))
+        self.lineEdit_DecTime.editingFinished.connect(self.textChanged_DecTime)
 
-        self.lineEdit_DecTime.textChanged.connect(self.textChanged_DecTime)
         self.lineEdit_OpTime.textChanged.connect(self.textChanged_OpTime)
         self.lineEdit_Dist.textChanged.connect(self.textChanged_Dist)
         self.lineEdit_OutVol.textChanged.connect(self.textChanged_OutVol)
@@ -101,21 +104,27 @@ class InvWindow(QMainWindow, form_class):
         self.textEdit_InvInfo.clear()
         
 
-
     def textChanged_Frq(self):
-        newvalue = self.lineEdit_Frq.text()
-        log.logger.debug("------ New Current {0} --------".format(newvalue))
-        QMessageBox.about(self, "문자 변경", newvalue)
-        self.inveter.sendParameter('CommandFreq', 2000)
+        strValue = self.lineEdit_Frq.text()
+        log.logger.debug("------ New Current {0} --------".format(strValue))
+        #QMessageBox.about(self, "문자 변경", strValue)
+        valueFraq = float(strValue) * 100
+        self.inveter.sendParameter('CommandFreq', valueFraq)
         
 
     def textChanged_AccTime(self):
-        newvalue = self.lineEdit_AccTime.text()
-        log.logger.debug("------ New Current {0} --------".format(newvalue))
-        QMessageBox.about(self, "가속시간 변경", newvalue)
+        strValue = self.lineEdit_AccTime.text()
+        log.logger.debug("------ New Current {0} --------".format(strValue))
+        #QMessageBox.about(self, "가속시간 변경", strValue)
+        valueAccTime = int(strValue)
+        self.inveter.sendParameter('AccelTime', valueAccTime)
  
     def textChanged_DecTime(self):
-        pass
+        strValue = self.lineEdit_DecTime.text()
+        log.logger.debug("------ New Current {0} --------".format(strValue))
+        #QMessageBox.about(self, "가속시간 변경", strValue)
+        valueDecTime = int(strValue)
+        self.inveter.sendParameter('DecelTime', valueDecTime)
 
     def textChanged_OpTime(self):
         pass
@@ -192,7 +201,7 @@ def run():
     while True:
         menu = print_menu()
         if menu == 1:
-            inveter.getInverStatus()
+            inveter.getInverterStatus()
             inveter.updateInverterStatus()
         elif menu == 2:
             inveter.runMotor(True)
