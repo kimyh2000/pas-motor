@@ -1,0 +1,413 @@
+[DEBUG|inverter.py:69] 2017-12-15 18:22:12,851 > (1) comport COM3
+[DEBUG|inverter.py:84] 2017-12-15 18:22:12,851 > (2) comport COM3
+[DEBUG|inverter.py:99] 2017-12-15 18:22:12,867 > Serial<id=0x2eaf198, open=True>(port='COM3', baudrate=9600, bytesize=8, parity='N', stopbits=2, timeout=5, xonxoff=False, rtscts=False, dsrdtr=False)
+[DEBUG|inverter.py:100] 2017-12-15 18:22:12,867 > CInverter Initialize serial comm
+[DEBUG|inverter.py:81] 2017-12-15 18:22:12,867 > CInverter __init__
+[DEBUG|inverter.py:189] 2017-12-15 18:22:17,320 > CInverter sendRequest start Model
+[DEBUG|inverter.py:206] 2017-12-15 18:22:17,320 > [1, 4, 0, 0, 0, 1, 49, 202]
+[DEBUG|inverter.py:207] 2017-12-15 18:22:17,320 > bytearray(b'\x01\x04\x00\x00\x00\x011\xca')
+[DEBUG|inverter.py:212] 2017-12-15 18:22:17,320 > #############  CInverter sendRequest end Model
+[DEBUG|inverter.py:227] 2017-12-15 18:22:17,367 > getResponse ReadData 
+[DEBUG|inverter.py:228] 2017-12-15 18:22:17,367 > [1, 4, 2, 0, 0, 185, 48]
+[DEBUG|inverter.py:242] 2017-12-15 18:22:17,367 > $$$$$$$$$$$  CInverter getResponse is OK, Data is 0
+[DEBUG|inverter.py:189] 2017-12-15 18:22:18,069 > CInverter sendRequest start Power
+[DEBUG|inverter.py:206] 2017-12-15 18:22:18,069 > [1, 4, 0, 1, 0, 1, 96, 10]
+[DEBUG|inverter.py:207] 2017-12-15 18:22:18,069 > bytearray(b'\x01\x04\x00\x01\x00\x01`\n')
+[DEBUG|inverter.py:212] 2017-12-15 18:22:18,069 > #############  CInverter sendRequest end Power
+[DEBUG|inverter.py:227] 2017-12-15 18:22:18,116 > getResponse ReadData 
+[DEBUG|inverter.py:228] 2017-12-15 18:22:18,116 > [1, 4, 2, 0, 0, 185, 48]
+[DEBUG|inverter.py:242] 2017-12-15 18:22:18,116 > $$$$$$$$$$$  CInverter getResponse is OK, Data is 0
+[DEBUG|inverter.py:189] 2017-12-15 18:22:18,818 > CInverter sendRequest start InputVol
+[DEBUG|inverter.py:206] 2017-12-15 18:22:18,818 > [1, 4, 0, 2, 0, 1, 144, 10]
+[DEBUG|inverter.py:207] 2017-12-15 18:22:18,818 > bytearray(b'\x01\x04\x00\x02\x00\x01\x90\n')
+[DEBUG|inverter.py:212] 2017-12-15 18:22:18,818 > #############  CInverter sendRequest end InputVol
+[DEBUG|inverter.py:227] 2017-12-15 18:22:18,865 > getResponse ReadData 
+[DEBUG|inverter.py:228] 2017-12-15 18:22:18,865 > [1, 4, 2, 0, 39, 249, 42]
+[DEBUG|inverter.py:242] 2017-12-15 18:22:18,865 > $$$$$$$$$$$  CInverter getResponse is OK, Data is 39
+[DEBUG|inverter.py:189] 2017-12-15 18:22:19,567 > CInverter sendRequest start Version
+[DEBUG|inverter.py:206] 2017-12-15 18:22:19,567 > [1, 4, 0, 3, 0, 1, 193, 202]
+[DEBUG|inverter.py:207] 2017-12-15 18:22:19,567 > bytearray(b'\x01\x04\x00\x03\x00\x01\xc1\xca')
+[DEBUG|inverter.py:212] 2017-12-15 18:22:19,567 > #############  CInverter sendRequest end Version
+[DEBUG|inverter.py:227] 2017-12-15 18:22:19,614 > getResponse ReadData 
+[DEBUG|inverter.py:228] 2017-12-15 18:22:19,614 > [1, 4, 2, 0, 1, 120, 240]
+[DEBUG|inverter.py:242] 2017-12-15 18:22:19,614 > $$$$$$$$$$$  CInverter getResponse is OK, Data is 1
+[DEBUG|inverter.py:189] 2017-12-15 18:22:20,316 > CInverter sendRequest start CommandFreq
+[DEBUG|inverter.py:206] 2017-12-15 18:22:20,331 > [1, 4, 0, 5, 0, 1, 33, 203]
+[DEBUG|inverter.py:207] 2017-12-15 18:22:20,331 > bytearray(b'\x01\x04\x00\x05\x00\x01!\xcb')
+[DEBUG|inverter.py:212] 2017-12-15 18:22:20,347 > #############  CInverter sendRequest end CommandFreq
+[DEBUG|inverter.py:227] 2017-12-15 18:22:20,378 > getResponse ReadData 
+[DEBUG|inverter.py:228] 2017-12-15 18:22:20,394 > [1, 4, 2, 19, 193, 117, 144]
+[DEBUG|inverter.py:242] 2017-12-15 18:22:20,394 > $$$$$$$$$$$  CInverter getResponse is OK, Data is 5057
+[DEBUG|inverter.py:189] 2017-12-15 18:22:21,096 > CInverter sendRequest start OpCommand
+[DEBUG|inverter.py:206] 2017-12-15 18:22:21,096 > [1, 4, 0, 6, 0, 1, 209, 203]
+[DEBUG|inverter.py:207] 2017-12-15 18:22:21,096 > bytearray(b'\x01\x04\x00\x06\x00\x01\xd1\xcb')
+[DEBUG|inverter.py:212] 2017-12-15 18:22:21,096 > #############  CInverter sendRequest end OpCommand
+[DEBUG|inverter.py:227] 2017-12-15 18:22:21,142 > getResponse ReadData 
+[DEBUG|inverter.py:228] 2017-12-15 18:22:21,142 > [1, 4, 2, 0, 1, 120, 240]
+[DEBUG|inverter.py:242] 2017-12-15 18:22:21,142 > $$$$$$$$$$$  CInverter getResponse is OK, Data is 1
+[DEBUG|inverter.py:189] 2017-12-15 18:22:21,844 > CInverter sendRequest start AccelTime
+[DEBUG|inverter.py:206] 2017-12-15 18:22:21,844 > [1, 4, 0, 7, 0, 1, 128, 11]
+[DEBUG|inverter.py:207] 2017-12-15 18:22:21,844 > bytearray(b'\x01\x04\x00\x07\x00\x01\x80\x0b')
+[DEBUG|inverter.py:212] 2017-12-15 18:22:21,844 > #############  CInverter sendRequest end AccelTime
+[DEBUG|inverter.py:227] 2017-12-15 18:22:21,891 > getResponse ReadData 
+[DEBUG|inverter.py:228] 2017-12-15 18:22:21,891 > [1, 4, 2, 0, 50, 56, 229]
+[DEBUG|inverter.py:242] 2017-12-15 18:22:21,891 > $$$$$$$$$$$  CInverter getResponse is OK, Data is 50
+[DEBUG|inverter.py:189] 2017-12-15 18:22:22,593 > CInverter sendRequest start DecelTime
+[DEBUG|inverter.py:206] 2017-12-15 18:22:22,593 > [1, 4, 0, 8, 0, 1, 176, 8]
+[DEBUG|inverter.py:207] 2017-12-15 18:22:22,593 > bytearray(b'\x01\x04\x00\x08\x00\x01\xb0\x08')
+[DEBUG|inverter.py:212] 2017-12-15 18:22:22,593 > #############  CInverter sendRequest end DecelTime
+[DEBUG|inverter.py:227] 2017-12-15 18:22:22,640 > getResponse ReadData 
+[DEBUG|inverter.py:228] 2017-12-15 18:22:22,640 > [1, 4, 2, 0, 0, 185, 48]
+[DEBUG|inverter.py:242] 2017-12-15 18:22:22,640 > $$$$$$$$$$$  CInverter getResponse is OK, Data is 0
+[DEBUG|inverter.py:189] 2017-12-15 18:22:23,342 > CInverter sendRequest start OutputFreq
+[DEBUG|inverter.py:206] 2017-12-15 18:22:23,342 > [1, 4, 0, 10, 0, 1, 17, 200]
+[DEBUG|inverter.py:207] 2017-12-15 18:22:23,342 > bytearray(b'\x01\x04\x00\n\x00\x01\x11\xc8')
+[DEBUG|inverter.py:212] 2017-12-15 18:22:23,342 > #############  CInverter sendRequest end OutputFreq
+[DEBUG|inverter.py:227] 2017-12-15 18:22:23,389 > getResponse ReadData 
+[DEBUG|inverter.py:228] 2017-12-15 18:22:23,389 > [1, 4, 2, 0, 0, 185, 48]
+[DEBUG|inverter.py:242] 2017-12-15 18:22:23,389 > $$$$$$$$$$$  CInverter getResponse is OK, Data is 0
+[DEBUG|inverter.py:189] 2017-12-15 18:22:24,091 > CInverter sendRequest start RPM
+[DEBUG|inverter.py:206] 2017-12-15 18:22:24,091 > [1, 4, 0, 21, 0, 1, 32, 14]
+[DEBUG|inverter.py:207] 2017-12-15 18:22:24,091 > bytearray(b'\x01\x04\x00\x15\x00\x01 \x0e')
+[DEBUG|inverter.py:212] 2017-12-15 18:22:24,091 > #############  CInverter sendRequest end RPM
+[DEBUG|inverter.py:227] 2017-12-15 18:22:29,139 > getResponse ReadData 
+[DEBUG|inverter.py:228] 2017-12-15 18:22:29,139 > [1, 132, 2, 194, 193]
+[DEBUG|inverter.py:351] 2017-12-15 18:22:29,139 > CInverter motorFaultReset
+[DEBUG|inverter.py:352] 2017-12-15 18:22:29,139 > Model 0
+[DEBUG|inverter.py:353] 2017-12-15 18:22:29,139 > Power 0
+[DEBUG|inverter.py:354] 2017-12-15 18:22:29,139 > Input Voltage 39
+[DEBUG|inverter.py:355] 2017-12-15 18:22:29,139 > Version 1
+[DEBUG|inverter.py:356] 2017-12-15 18:22:29,139 > Command Freq 5057
+[DEBUG|inverter.py:357] 2017-12-15 18:22:29,139 > OP Command 0
+[DEBUG|inverter.py:358] 2017-12-15 18:22:29,139 > Accel Time 50
+[DEBUG|inverter.py:359] 2017-12-15 18:22:29,139 > Decel Time 0
+[DEBUG|inverter.py:360] 2017-12-15 18:22:29,139 > Output Freq 0
+[DEBUG|inverter.py:361] 2017-12-15 18:22:29,155 > RPM 0
+[DEBUG|inverter.py:69] 2017-12-15 19:27:58,592 > (1) comport COM3
+[DEBUG|inverter.py:84] 2017-12-15 19:27:58,592 > (2) comport COM3
+[DEBUG|inverter.py:99] 2017-12-15 19:27:58,607 > Serial<id=0x2e9f198, open=True>(port='COM3', baudrate=9600, bytesize=8, parity='N', stopbits=2, timeout=5, xonxoff=False, rtscts=False, dsrdtr=False)
+[DEBUG|inverter.py:100] 2017-12-15 19:27:58,607 > CInverter Initialize serial comm
+[DEBUG|inverter.py:81] 2017-12-15 19:27:58,607 > CInverter __init__
+[DEBUG|inverter.py:189] 2017-12-15 19:28:10,885 > CInverter sendRequest start Model
+[DEBUG|inverter.py:206] 2017-12-15 19:28:10,887 > [1, 4, 0, 0, 0, 1, 49, 202]
+[DEBUG|inverter.py:207] 2017-12-15 19:28:10,889 > bytearray(b'\x01\x04\x00\x00\x00\x011\xca')
+[DEBUG|inverter.py:212] 2017-12-15 19:28:10,891 > #############  CInverter sendRequest end Model
+[DEBUG|inverter.py:227] 2017-12-15 19:28:10,936 > getResponse ReadData 
+[DEBUG|inverter.py:228] 2017-12-15 19:28:10,938 > [1, 4, 2, 0, 0, 185, 48]
+[DEBUG|inverter.py:242] 2017-12-15 19:28:10,940 > $$$$$$$$$$$  CInverter getResponse is OK, Data is 0
+[DEBUG|inverter.py:189] 2017-12-15 19:28:11,641 > CInverter sendRequest start Power
+[DEBUG|inverter.py:206] 2017-12-15 19:28:11,643 > [1, 4, 0, 1, 0, 1, 96, 10]
+[DEBUG|inverter.py:207] 2017-12-15 19:28:11,645 > bytearray(b'\x01\x04\x00\x01\x00\x01`\n')
+[DEBUG|inverter.py:212] 2017-12-15 19:28:11,647 > #############  CInverter sendRequest end Power
+[DEBUG|inverter.py:227] 2017-12-15 19:28:11,692 > getResponse ReadData 
+[DEBUG|inverter.py:228] 2017-12-15 19:28:11,694 > [1, 4, 2, 0, 0, 185, 48]
+[DEBUG|inverter.py:242] 2017-12-15 19:28:11,696 > $$$$$$$$$$$  CInverter getResponse is OK, Data is 0
+[DEBUG|inverter.py:189] 2017-12-15 19:28:12,398 > CInverter sendRequest start InputVol
+[DEBUG|inverter.py:206] 2017-12-15 19:28:12,399 > [1, 4, 0, 2, 0, 1, 144, 10]
+[DEBUG|inverter.py:207] 2017-12-15 19:28:12,401 > bytearray(b'\x01\x04\x00\x02\x00\x01\x90\n')
+[DEBUG|inverter.py:212] 2017-12-15 19:28:12,403 > #############  CInverter sendRequest end InputVol
+[DEBUG|inverter.py:227] 2017-12-15 19:28:12,448 > getResponse ReadData 
+[DEBUG|inverter.py:228] 2017-12-15 19:28:12,451 > [1, 4, 2, 0, 39, 249, 42]
+[DEBUG|inverter.py:242] 2017-12-15 19:28:12,454 > $$$$$$$$$$$  CInverter getResponse is OK, Data is 39
+[DEBUG|inverter.py:189] 2017-12-15 19:28:13,155 > CInverter sendRequest start Version
+[DEBUG|inverter.py:206] 2017-12-15 19:28:13,157 > [1, 4, 163, 79, 0, 1, 34, 89]
+[DEBUG|inverter.py:207] 2017-12-15 19:28:13,158 > bytearray(b'\x01\x04\xa3O\x00\x01"Y')
+[DEBUG|inverter.py:212] 2017-12-15 19:28:13,160 > #############  CInverter sendRequest end Version
+[DEBUG|inverter.py:227] 2017-12-15 19:28:18,204 > getResponse ReadData 
+[DEBUG|inverter.py:228] 2017-12-15 19:28:18,206 > [1, 132, 2, 194, 193]
+[DEBUG|inverter.py:351] 2017-12-15 19:28:18,208 > CInverter motorFaultReset
+[DEBUG|inverter.py:352] 2017-12-15 19:28:18,210 > Model 0
+[DEBUG|inverter.py:353] 2017-12-15 19:28:18,212 > Power 0
+[DEBUG|inverter.py:354] 2017-12-15 19:28:18,213 > Input Voltage 39
+[DEBUG|inverter.py:355] 2017-12-15 19:28:18,215 > Version 0
+[DEBUG|inverter.py:356] 2017-12-15 19:28:18,217 > Command Freq 0
+[DEBUG|inverter.py:357] 2017-12-15 19:28:18,218 > OP Command 0
+[DEBUG|inverter.py:358] 2017-12-15 19:28:18,220 > Accel Time 0
+[DEBUG|inverter.py:359] 2017-12-15 19:28:18,221 > Decel Time 0
+[DEBUG|inverter.py:360] 2017-12-15 19:28:18,222 > Output Freq 0
+[DEBUG|inverter.py:361] 2017-12-15 19:28:18,224 > RPM 0
+[DEBUG|inverter.py:69] 2017-12-15 19:29:56,085 > (1) comport COM3
+[DEBUG|inverter.py:84] 2017-12-15 19:29:56,085 > (2) comport COM3
+[DEBUG|inverter.py:99] 2017-12-15 19:29:56,085 > Serial<id=0x2e9f198, open=True>(port='COM3', baudrate=9600, bytesize=8, parity='N', stopbits=2, timeout=5, xonxoff=False, rtscts=False, dsrdtr=False)
+[DEBUG|inverter.py:100] 2017-12-15 19:29:56,100 > CInverter Initialize serial comm
+[DEBUG|inverter.py:81] 2017-12-15 19:29:56,100 > CInverter __init__
+[DEBUG|inverter.py:189] 2017-12-15 19:29:59,076 > CInverter sendRequest start Model
+[DEBUG|inverter.py:206] 2017-12-15 19:29:59,078 > [1, 4, 0, 0, 0, 1, 49, 202]
+[DEBUG|inverter.py:207] 2017-12-15 19:29:59,079 > bytearray(b'\x01\x04\x00\x00\x00\x011\xca')
+[DEBUG|inverter.py:212] 2017-12-15 19:29:59,081 > #############  CInverter sendRequest end Model
+[DEBUG|inverter.py:227] 2017-12-15 19:29:59,127 > getResponse ReadData 
+[DEBUG|inverter.py:228] 2017-12-15 19:29:59,129 > [1, 4, 2, 0, 0, 185, 48]
+[DEBUG|inverter.py:242] 2017-12-15 19:29:59,130 > $$$$$$$$$$$  CInverter getResponse is OK, Data is 0
+[DEBUG|inverter.py:189] 2017-12-15 19:29:59,833 > CInverter sendRequest start Power
+[DEBUG|inverter.py:206] 2017-12-15 19:29:59,834 > [1, 4, 0, 1, 0, 1, 96, 10]
+[DEBUG|inverter.py:207] 2017-12-15 19:29:59,835 > bytearray(b'\x01\x04\x00\x01\x00\x01`\n')
+[DEBUG|inverter.py:212] 2017-12-15 19:29:59,836 > #############  CInverter sendRequest end Power
+[DEBUG|inverter.py:227] 2017-12-15 19:29:59,882 > getResponse ReadData 
+[DEBUG|inverter.py:228] 2017-12-15 19:29:59,883 > [1, 4, 2, 0, 0, 185, 48]
+[DEBUG|inverter.py:242] 2017-12-15 19:29:59,884 > $$$$$$$$$$$  CInverter getResponse is OK, Data is 0
+[DEBUG|inverter.py:189] 2017-12-15 19:30:00,584 > CInverter sendRequest start InputVol
+[DEBUG|inverter.py:206] 2017-12-15 19:30:00,585 > [1, 4, 0, 2, 0, 1, 144, 10]
+[DEBUG|inverter.py:207] 2017-12-15 19:30:00,587 > bytearray(b'\x01\x04\x00\x02\x00\x01\x90\n')
+[DEBUG|inverter.py:212] 2017-12-15 19:30:00,588 > #############  CInverter sendRequest end InputVol
+[DEBUG|inverter.py:227] 2017-12-15 19:30:00,634 > getResponse ReadData 
+[DEBUG|inverter.py:228] 2017-12-15 19:30:00,635 > [1, 4, 2, 0, 39, 249, 42]
+[DEBUG|inverter.py:242] 2017-12-15 19:30:00,635 > $$$$$$$$$$$  CInverter getResponse is OK, Data is 39
+[DEBUG|inverter.py:189] 2017-12-15 19:30:01,336 > CInverter sendRequest start Version
+[DEBUG|inverter.py:206] 2017-12-15 19:30:01,337 > [1, 4, 0, 3, 0, 1, 193, 202]
+[DEBUG|inverter.py:207] 2017-12-15 19:30:01,339 > bytearray(b'\x01\x04\x00\x03\x00\x01\xc1\xca')
+[DEBUG|inverter.py:212] 2017-12-15 19:30:01,340 > #############  CInverter sendRequest end Version
+[DEBUG|inverter.py:227] 2017-12-15 19:30:01,386 > getResponse ReadData 
+[DEBUG|inverter.py:228] 2017-12-15 19:30:01,388 > [1, 4, 2, 0, 1, 120, 240]
+[DEBUG|inverter.py:242] 2017-12-15 19:30:01,389 > $$$$$$$$$$$  CInverter getResponse is OK, Data is 1
+[DEBUG|inverter.py:189] 2017-12-15 19:30:02,091 > CInverter sendRequest start CommandFreq
+[DEBUG|inverter.py:206] 2017-12-15 19:30:02,093 > [1, 4, 0, 5, 0, 1, 33, 203]
+[DEBUG|inverter.py:207] 2017-12-15 19:30:02,094 > bytearray(b'\x01\x04\x00\x05\x00\x01!\xcb')
+[DEBUG|inverter.py:212] 2017-12-15 19:30:02,096 > #############  CInverter sendRequest end CommandFreq
+[DEBUG|inverter.py:227] 2017-12-15 19:30:02,142 > getResponse ReadData 
+[DEBUG|inverter.py:228] 2017-12-15 19:30:02,143 > [1, 4, 2, 19, 193, 117, 144]
+[DEBUG|inverter.py:242] 2017-12-15 19:30:02,145 > $$$$$$$$$$$  CInverter getResponse is OK, Data is 5057
+[DEBUG|inverter.py:189] 2017-12-15 19:30:02,846 > CInverter sendRequest start OpCommand
+[DEBUG|inverter.py:206] 2017-12-15 19:30:02,848 > [1, 4, 0, 6, 0, 1, 209, 203]
+[DEBUG|inverter.py:207] 2017-12-15 19:30:02,849 > bytearray(b'\x01\x04\x00\x06\x00\x01\xd1\xcb')
+[DEBUG|inverter.py:212] 2017-12-15 19:30:02,851 > #############  CInverter sendRequest end OpCommand
+[DEBUG|inverter.py:227] 2017-12-15 19:30:02,897 > getResponse ReadData 
+[DEBUG|inverter.py:228] 2017-12-15 19:30:02,899 > [1, 4, 2, 0, 1, 120, 240]
+[DEBUG|inverter.py:242] 2017-12-15 19:30:02,901 > $$$$$$$$$$$  CInverter getResponse is OK, Data is 1
+[DEBUG|inverter.py:189] 2017-12-15 19:30:03,602 > CInverter sendRequest start AccelTime
+[DEBUG|inverter.py:206] 2017-12-15 19:30:03,604 > [1, 4, 0, 7, 0, 1, 128, 11]
+[DEBUG|inverter.py:207] 2017-12-15 19:30:03,605 > bytearray(b'\x01\x04\x00\x07\x00\x01\x80\x0b')
+[DEBUG|inverter.py:212] 2017-12-15 19:30:03,607 > #############  CInverter sendRequest end AccelTime
+[DEBUG|inverter.py:227] 2017-12-15 19:30:03,653 > getResponse ReadData 
+[DEBUG|inverter.py:228] 2017-12-15 19:30:03,654 > [1, 4, 2, 0, 50, 56, 229]
+[DEBUG|inverter.py:242] 2017-12-15 19:30:03,656 > $$$$$$$$$$$  CInverter getResponse is OK, Data is 50
+[DEBUG|inverter.py:189] 2017-12-15 19:30:04,357 > CInverter sendRequest start DecelTime
+[DEBUG|inverter.py:206] 2017-12-15 19:30:04,358 > [1, 4, 0, 8, 0, 1, 176, 8]
+[DEBUG|inverter.py:207] 2017-12-15 19:30:04,360 > bytearray(b'\x01\x04\x00\x08\x00\x01\xb0\x08')
+[DEBUG|inverter.py:212] 2017-12-15 19:30:04,362 > #############  CInverter sendRequest end DecelTime
+[DEBUG|inverter.py:227] 2017-12-15 19:30:04,408 > getResponse ReadData 
+[DEBUG|inverter.py:228] 2017-12-15 19:30:04,409 > [1, 4, 2, 0, 0, 185, 48]
+[DEBUG|inverter.py:242] 2017-12-15 19:30:04,411 > $$$$$$$$$$$  CInverter getResponse is OK, Data is 0
+[DEBUG|inverter.py:189] 2017-12-15 19:30:05,112 > CInverter sendRequest start OutputFreq
+[DEBUG|inverter.py:206] 2017-12-15 19:30:05,114 > [1, 4, 0, 10, 0, 1, 17, 200]
+[DEBUG|inverter.py:207] 2017-12-15 19:30:05,115 > bytearray(b'\x01\x04\x00\n\x00\x01\x11\xc8')
+[DEBUG|inverter.py:212] 2017-12-15 19:30:05,117 > #############  CInverter sendRequest end OutputFreq
+[DEBUG|inverter.py:227] 2017-12-15 19:30:05,163 > getResponse ReadData 
+[DEBUG|inverter.py:228] 2017-12-15 19:30:05,165 > [1, 4, 2, 0, 0, 185, 48]
+[DEBUG|inverter.py:242] 2017-12-15 19:30:05,166 > $$$$$$$$$$$  CInverter getResponse is OK, Data is 0
+[DEBUG|inverter.py:189] 2017-12-15 19:30:05,868 > CInverter sendRequest start RPM
+[DEBUG|inverter.py:206] 2017-12-15 19:30:05,869 > [1, 4, 0, 21, 0, 1, 32, 14]
+[DEBUG|inverter.py:207] 2017-12-15 19:30:05,871 > bytearray(b'\x01\x04\x00\x15\x00\x01 \x0e')
+[DEBUG|inverter.py:212] 2017-12-15 19:30:05,872 > #############  CInverter sendRequest end RPM
+[DEBUG|inverter.py:227] 2017-12-15 19:30:10,916 > getResponse ReadData 
+[DEBUG|inverter.py:228] 2017-12-15 19:30:10,917 > [1, 132, 2, 194, 193]
+[DEBUG|inverter.py:351] 2017-12-15 19:30:10,919 > CInverter motorFaultReset
+[DEBUG|inverter.py:352] 2017-12-15 19:30:10,920 > Model 0
+[DEBUG|inverter.py:353] 2017-12-15 19:30:10,921 > Power 0
+[DEBUG|inverter.py:354] 2017-12-15 19:30:10,922 > Input Voltage 39
+[DEBUG|inverter.py:355] 2017-12-15 19:30:10,924 > Version 1
+[DEBUG|inverter.py:356] 2017-12-15 19:30:10,926 > Command Freq 5057
+[DEBUG|inverter.py:357] 2017-12-15 19:30:10,927 > OP Command 0
+[DEBUG|inverter.py:358] 2017-12-15 19:30:10,929 > Accel Time 50
+[DEBUG|inverter.py:359] 2017-12-15 19:30:10,931 > Decel Time 0
+[DEBUG|inverter.py:360] 2017-12-15 19:30:10,932 > Output Freq 0
+[DEBUG|inverter.py:361] 2017-12-15 19:30:10,933 > RPM 0
+[DEBUG|inverter.py:69] 2017-12-15 19:33:06,233 > (1) comport COM3
+[DEBUG|inverter.py:84] 2017-12-15 19:33:06,233 > (2) comport COM3
+[DEBUG|inverter.py:99] 2017-12-15 19:33:06,249 > Serial<id=0x2e8f198, open=True>(port='COM3', baudrate=9600, bytesize=8, parity='N', stopbits=2, timeout=5, xonxoff=False, rtscts=False, dsrdtr=False)
+[DEBUG|inverter.py:100] 2017-12-15 19:33:06,249 > CInverter Initialize serial comm
+[DEBUG|inverter.py:81] 2017-12-15 19:33:06,249 > CInverter __init__
+[DEBUG|inverter.py:189] 2017-12-15 19:33:09,220 > CInverter sendRequest start Model
+[DEBUG|inverter.py:206] 2017-12-15 19:33:09,221 > [1, 4, 0, 0, 0, 1, 49, 202]
+[DEBUG|inverter.py:207] 2017-12-15 19:33:09,223 > bytearray(b'\x01\x04\x00\x00\x00\x011\xca')
+[DEBUG|inverter.py:212] 2017-12-15 19:33:09,224 > #############  CInverter sendRequest end Model
+[DEBUG|inverter.py:228] 2017-12-15 19:33:09,270 > getResponse ReadData 
+[DEBUG|inverter.py:229] 2017-12-15 19:33:09,271 > b'\x01\x04\x02\x00\x00\xb90'
+[DEBUG|inverter.py:230] 2017-12-15 19:33:09,273 > [1, 4, 2, 0, 0, 185, 48]
+[DEBUG|inverter.py:244] 2017-12-15 19:33:09,274 > $$$$$$$$$$$  CInverter getResponse is OK, Data is 0
+[DEBUG|inverter.py:189] 2017-12-15 19:33:09,976 > CInverter sendRequest start Power
+[DEBUG|inverter.py:206] 2017-12-15 19:33:09,978 > [1, 4, 0, 1, 0, 1, 96, 10]
+[DEBUG|inverter.py:207] 2017-12-15 19:33:09,979 > bytearray(b'\x01\x04\x00\x01\x00\x01`\n')
+[DEBUG|inverter.py:212] 2017-12-15 19:33:09,981 > #############  CInverter sendRequest end Power
+[DEBUG|inverter.py:228] 2017-12-15 19:33:10,027 > getResponse ReadData 
+[DEBUG|inverter.py:229] 2017-12-15 19:33:10,029 > b'\x01\x04\x02\x00\x00\xb90'
+[DEBUG|inverter.py:230] 2017-12-15 19:33:10,030 > [1, 4, 2, 0, 0, 185, 48]
+[DEBUG|inverter.py:244] 2017-12-15 19:33:10,031 > $$$$$$$$$$$  CInverter getResponse is OK, Data is 0
+[DEBUG|inverter.py:189] 2017-12-15 19:33:10,733 > CInverter sendRequest start InputVol
+[DEBUG|inverter.py:206] 2017-12-15 19:33:10,734 > [1, 4, 0, 2, 0, 1, 144, 10]
+[DEBUG|inverter.py:207] 2017-12-15 19:33:10,736 > bytearray(b'\x01\x04\x00\x02\x00\x01\x90\n')
+[DEBUG|inverter.py:212] 2017-12-15 19:33:10,738 > #############  CInverter sendRequest end InputVol
+[DEBUG|inverter.py:228] 2017-12-15 19:33:10,784 > getResponse ReadData 
+[DEBUG|inverter.py:229] 2017-12-15 19:33:10,786 > b"\x01\x04\x02\x00'\xf9*"
+[DEBUG|inverter.py:230] 2017-12-15 19:33:10,787 > [1, 4, 2, 0, 39, 249, 42]
+[DEBUG|inverter.py:244] 2017-12-15 19:33:10,788 > $$$$$$$$$$$  CInverter getResponse is OK, Data is 39
+[DEBUG|inverter.py:189] 2017-12-15 19:33:11,490 > CInverter sendRequest start Version
+[DEBUG|inverter.py:206] 2017-12-15 19:33:11,492 > [1, 4, 0, 3, 0, 1, 193, 202]
+[DEBUG|inverter.py:207] 2017-12-15 19:33:11,493 > bytearray(b'\x01\x04\x00\x03\x00\x01\xc1\xca')
+[DEBUG|inverter.py:212] 2017-12-15 19:33:11,495 > #############  CInverter sendRequest end Version
+[DEBUG|inverter.py:228] 2017-12-15 19:33:11,541 > getResponse ReadData 
+[DEBUG|inverter.py:229] 2017-12-15 19:33:11,542 > b'\x01\x04\x02\x00\x01x\xf0'
+[DEBUG|inverter.py:230] 2017-12-15 19:33:11,544 > [1, 4, 2, 0, 1, 120, 240]
+[DEBUG|inverter.py:244] 2017-12-15 19:33:11,546 > $$$$$$$$$$$  CInverter getResponse is OK, Data is 1
+[DEBUG|inverter.py:189] 2017-12-15 19:33:12,247 > CInverter sendRequest start CommandFreq
+[DEBUG|inverter.py:206] 2017-12-15 19:33:12,249 > [1, 4, 0, 5, 0, 1, 33, 203]
+[DEBUG|inverter.py:207] 2017-12-15 19:33:12,250 > bytearray(b'\x01\x04\x00\x05\x00\x01!\xcb')
+[DEBUG|inverter.py:212] 2017-12-15 19:33:12,252 > #############  CInverter sendRequest end CommandFreq
+[DEBUG|inverter.py:228] 2017-12-15 19:33:12,300 > getResponse ReadData 
+[DEBUG|inverter.py:229] 2017-12-15 19:33:12,304 > b'\x01\x04\x02\x13\xc1u\x90'
+[DEBUG|inverter.py:230] 2017-12-15 19:33:12,306 > [1, 4, 2, 19, 193, 117, 144]
+[DEBUG|inverter.py:244] 2017-12-15 19:33:12,307 > $$$$$$$$$$$  CInverter getResponse is OK, Data is 5057
+[DEBUG|inverter.py:189] 2017-12-15 19:33:13,008 > CInverter sendRequest start OpCommand
+[DEBUG|inverter.py:206] 2017-12-15 19:33:13,010 > [1, 4, 0, 6, 0, 1, 209, 203]
+[DEBUG|inverter.py:207] 2017-12-15 19:33:13,011 > bytearray(b'\x01\x04\x00\x06\x00\x01\xd1\xcb')
+[DEBUG|inverter.py:212] 2017-12-15 19:33:13,013 > #############  CInverter sendRequest end OpCommand
+[DEBUG|inverter.py:228] 2017-12-15 19:33:13,058 > getResponse ReadData 
+[DEBUG|inverter.py:229] 2017-12-15 19:33:13,060 > b'\x01\x04\x02\x00\x01x\xf0'
+[DEBUG|inverter.py:230] 2017-12-15 19:33:13,061 > [1, 4, 2, 0, 1, 120, 240]
+[DEBUG|inverter.py:244] 2017-12-15 19:33:13,062 > $$$$$$$$$$$  CInverter getResponse is OK, Data is 1
+[DEBUG|inverter.py:189] 2017-12-15 19:33:13,763 > CInverter sendRequest start AccelTime
+[DEBUG|inverter.py:206] 2017-12-15 19:33:13,765 > [1, 4, 0, 7, 0, 1, 128, 11]
+[DEBUG|inverter.py:207] 2017-12-15 19:33:13,767 > bytearray(b'\x01\x04\x00\x07\x00\x01\x80\x0b')
+[DEBUG|inverter.py:212] 2017-12-15 19:33:13,768 > #############  CInverter sendRequest end AccelTime
+[DEBUG|inverter.py:228] 2017-12-15 19:33:13,813 > getResponse ReadData 
+[DEBUG|inverter.py:229] 2017-12-15 19:33:13,815 > b'\x01\x04\x02\x0028\xe5'
+[DEBUG|inverter.py:230] 2017-12-15 19:33:13,816 > [1, 4, 2, 0, 50, 56, 229]
+[DEBUG|inverter.py:244] 2017-12-15 19:33:13,818 > $$$$$$$$$$$  CInverter getResponse is OK, Data is 50
+[DEBUG|inverter.py:189] 2017-12-15 19:33:14,519 > CInverter sendRequest start DecelTime
+[DEBUG|inverter.py:206] 2017-12-15 19:33:14,521 > [1, 4, 0, 8, 0, 1, 176, 8]
+[DEBUG|inverter.py:207] 2017-12-15 19:33:14,522 > bytearray(b'\x01\x04\x00\x08\x00\x01\xb0\x08')
+[DEBUG|inverter.py:212] 2017-12-15 19:33:14,524 > #############  CInverter sendRequest end DecelTime
+[DEBUG|inverter.py:228] 2017-12-15 19:33:14,569 > getResponse ReadData 
+[DEBUG|inverter.py:229] 2017-12-15 19:33:14,571 > b'\x01\x04\x02\x00\x00\xb90'
+[DEBUG|inverter.py:230] 2017-12-15 19:33:14,573 > [1, 4, 2, 0, 0, 185, 48]
+[DEBUG|inverter.py:244] 2017-12-15 19:33:14,574 > $$$$$$$$$$$  CInverter getResponse is OK, Data is 0
+[DEBUG|inverter.py:189] 2017-12-15 19:33:15,276 > CInverter sendRequest start OutputFreq
+[DEBUG|inverter.py:206] 2017-12-15 19:33:15,277 > [1, 4, 0, 10, 0, 1, 17, 200]
+[DEBUG|inverter.py:207] 2017-12-15 19:33:15,277 > bytearray(b'\x01\x04\x00\n\x00\x01\x11\xc8')
+[DEBUG|inverter.py:212] 2017-12-15 19:33:15,278 > #############  CInverter sendRequest end OutputFreq
+[DEBUG|inverter.py:228] 2017-12-15 19:33:15,323 > getResponse ReadData 
+[DEBUG|inverter.py:229] 2017-12-15 19:33:15,325 > b'\x01\x04\x02\x00\x00\xb90'
+[DEBUG|inverter.py:230] 2017-12-15 19:33:15,327 > [1, 4, 2, 0, 0, 185, 48]
+[DEBUG|inverter.py:244] 2017-12-15 19:33:15,328 > $$$$$$$$$$$  CInverter getResponse is OK, Data is 0
+[DEBUG|inverter.py:189] 2017-12-15 19:33:16,030 > CInverter sendRequest start RPM
+[DEBUG|inverter.py:206] 2017-12-15 19:33:16,032 > [1, 4, 0, 21, 0, 1, 32, 14]
+[DEBUG|inverter.py:207] 2017-12-15 19:33:16,033 > bytearray(b'\x01\x04\x00\x15\x00\x01 \x0e')
+[DEBUG|inverter.py:212] 2017-12-15 19:33:16,035 > #############  CInverter sendRequest end RPM
+[DEBUG|inverter.py:228] 2017-12-15 19:33:21,079 > getResponse ReadData 
+[DEBUG|inverter.py:229] 2017-12-15 19:33:21,080 > b'\x01\x84\x02\xc2\xc1'
+[DEBUG|inverter.py:230] 2017-12-15 19:33:21,082 > [1, 132, 2, 194, 193]
+[DEBUG|inverter.py:353] 2017-12-15 19:33:21,083 > CInverter motorFaultReset
+[DEBUG|inverter.py:354] 2017-12-15 19:33:21,085 > Model 0
+[DEBUG|inverter.py:355] 2017-12-15 19:33:21,086 > Power 0
+[DEBUG|inverter.py:356] 2017-12-15 19:33:21,087 > Input Voltage 39
+[DEBUG|inverter.py:357] 2017-12-15 19:33:21,088 > Version 1
+[DEBUG|inverter.py:358] 2017-12-15 19:33:21,090 > Command Freq 5057
+[DEBUG|inverter.py:359] 2017-12-15 19:33:21,091 > OP Command 0
+[DEBUG|inverter.py:360] 2017-12-15 19:33:21,093 > Accel Time 50
+[DEBUG|inverter.py:361] 2017-12-15 19:33:21,094 > Decel Time 0
+[DEBUG|inverter.py:362] 2017-12-15 19:33:21,096 > Output Freq 0
+[DEBUG|inverter.py:363] 2017-12-15 19:33:21,097 > RPM 0
+[DEBUG|inverter.py:69] 2017-12-15 19:36:43,693 > (1) comport COM3
+[DEBUG|inverter.py:84] 2017-12-15 19:36:43,708 > (2) comport COM3
+[DEBUG|inverter.py:99] 2017-12-15 19:36:43,708 > Serial<id=0x2ec2128, open=True>(port='COM3', baudrate=9600, bytesize=8, parity='N', stopbits=2, timeout=5, xonxoff=False, rtscts=False, dsrdtr=False)
+[DEBUG|inverter.py:100] 2017-12-15 19:36:43,708 > CInverter Initialize serial comm
+[DEBUG|inverter.py:81] 2017-12-15 19:36:43,708 > CInverter __init__
+[DEBUG|inverter.py:189] 2017-12-15 19:36:45,514 > CInverter sendRequest start Model
+[DEBUG|inverter.py:206] 2017-12-15 19:36:45,516 > [1, 4, 0, 0, 0, 1, 49, 202]
+[DEBUG|inverter.py:207] 2017-12-15 19:36:45,518 > bytearray(b'\x01\x04\x00\x00\x00\x011\xca')
+[DEBUG|inverter.py:212] 2017-12-15 19:36:45,520 > #############  CInverter sendRequest end Model
+[DEBUG|inverter.py:228] 2017-12-15 19:36:45,566 > getResponse ReadData 7, 7
+[DEBUG|inverter.py:229] 2017-12-15 19:36:45,569 > b'\x01\x04\x02\x00\x00\xb90'
+[DEBUG|inverter.py:230] 2017-12-15 19:36:45,570 > [1, 4, 2, 0, 0, 185, 48]
+[DEBUG|inverter.py:244] 2017-12-15 19:36:45,572 > $$$$$$$$$$$  CInverter getResponse is OK, Data is 0
+[DEBUG|inverter.py:189] 2017-12-15 19:36:46,273 > CInverter sendRequest start Power
+[DEBUG|inverter.py:206] 2017-12-15 19:36:46,275 > [1, 4, 0, 1, 0, 1, 96, 10]
+[DEBUG|inverter.py:207] 2017-12-15 19:36:46,276 > bytearray(b'\x01\x04\x00\x01\x00\x01`\n')
+[DEBUG|inverter.py:212] 2017-12-15 19:36:46,278 > #############  CInverter sendRequest end Power
+[DEBUG|inverter.py:228] 2017-12-15 19:36:46,323 > getResponse ReadData 7, 7
+[DEBUG|inverter.py:229] 2017-12-15 19:36:46,325 > b'\x01\x04\x02\x00\x00\xb90'
+[DEBUG|inverter.py:230] 2017-12-15 19:36:46,326 > [1, 4, 2, 0, 0, 185, 48]
+[DEBUG|inverter.py:244] 2017-12-15 19:36:46,327 > $$$$$$$$$$$  CInverter getResponse is OK, Data is 0
+[DEBUG|inverter.py:189] 2017-12-15 19:36:47,029 > CInverter sendRequest start InputVol
+[DEBUG|inverter.py:206] 2017-12-15 19:36:47,031 > [1, 4, 0, 2, 0, 1, 144, 10]
+[DEBUG|inverter.py:207] 2017-12-15 19:36:47,033 > bytearray(b'\x01\x04\x00\x02\x00\x01\x90\n')
+[DEBUG|inverter.py:212] 2017-12-15 19:36:47,035 > #############  CInverter sendRequest end InputVol
+[DEBUG|inverter.py:228] 2017-12-15 19:36:47,082 > getResponse ReadData 7, 7
+[DEBUG|inverter.py:229] 2017-12-15 19:36:47,084 > b"\x01\x04\x02\x00'\xf9*"
+[DEBUG|inverter.py:230] 2017-12-15 19:36:47,085 > [1, 4, 2, 0, 39, 249, 42]
+[DEBUG|inverter.py:244] 2017-12-15 19:36:47,087 > $$$$$$$$$$$  CInverter getResponse is OK, Data is 39
+[DEBUG|inverter.py:189] 2017-12-15 19:36:47,788 > CInverter sendRequest start Version
+[DEBUG|inverter.py:206] 2017-12-15 19:36:47,790 > [1, 4, 0, 3, 0, 1, 193, 202]
+[DEBUG|inverter.py:207] 2017-12-15 19:36:47,791 > bytearray(b'\x01\x04\x00\x03\x00\x01\xc1\xca')
+[DEBUG|inverter.py:212] 2017-12-15 19:36:47,793 > #############  CInverter sendRequest end Version
+[DEBUG|inverter.py:228] 2017-12-15 19:36:47,839 > getResponse ReadData 7, 7
+[DEBUG|inverter.py:229] 2017-12-15 19:36:47,841 > b'\x01\x04\x02\x00\x01x\xf0'
+[DEBUG|inverter.py:230] 2017-12-15 19:36:47,843 > [1, 4, 2, 0, 1, 120, 240]
+[DEBUG|inverter.py:244] 2017-12-15 19:36:47,844 > $$$$$$$$$$$  CInverter getResponse is OK, Data is 1
+[DEBUG|inverter.py:189] 2017-12-15 19:36:48,546 > CInverter sendRequest start CommandFreq
+[DEBUG|inverter.py:206] 2017-12-15 19:36:48,548 > [1, 4, 0, 5, 0, 1, 33, 203]
+[DEBUG|inverter.py:207] 2017-12-15 19:36:48,550 > bytearray(b'\x01\x04\x00\x05\x00\x01!\xcb')
+[DEBUG|inverter.py:212] 2017-12-15 19:36:48,552 > #############  CInverter sendRequest end CommandFreq
+[DEBUG|inverter.py:228] 2017-12-15 19:36:48,597 > getResponse ReadData 7, 7
+[DEBUG|inverter.py:229] 2017-12-15 19:36:48,599 > b'\x01\x04\x02\x13\xc1u\x90'
+[DEBUG|inverter.py:230] 2017-12-15 19:36:48,601 > [1, 4, 2, 19, 193, 117, 144]
+[DEBUG|inverter.py:244] 2017-12-15 19:36:48,605 > $$$$$$$$$$$  CInverter getResponse is OK, Data is 5057
+[DEBUG|inverter.py:189] 2017-12-15 19:36:49,314 > CInverter sendRequest start OpCommand
+[DEBUG|inverter.py:206] 2017-12-15 19:36:49,316 > [1, 4, 0, 6, 0, 1, 209, 203]
+[DEBUG|inverter.py:207] 2017-12-15 19:36:49,317 > bytearray(b'\x01\x04\x00\x06\x00\x01\xd1\xcb')
+[DEBUG|inverter.py:212] 2017-12-15 19:36:49,319 > #############  CInverter sendRequest end OpCommand
+[DEBUG|inverter.py:228] 2017-12-15 19:36:49,365 > getResponse ReadData 7, 7
+[DEBUG|inverter.py:229] 2017-12-15 19:36:49,367 > b'\x01\x04\x02\x00\x01x\xf0'
+[DEBUG|inverter.py:230] 2017-12-15 19:36:49,368 > [1, 4, 2, 0, 1, 120, 240]
+[DEBUG|inverter.py:244] 2017-12-15 19:36:49,370 > $$$$$$$$$$$  CInverter getResponse is OK, Data is 1
+[DEBUG|inverter.py:189] 2017-12-15 19:36:50,072 > CInverter sendRequest start AccelTime
+[DEBUG|inverter.py:206] 2017-12-15 19:36:50,074 > [1, 4, 0, 7, 0, 1, 128, 11]
+[DEBUG|inverter.py:207] 2017-12-15 19:36:50,076 > bytearray(b'\x01\x04\x00\x07\x00\x01\x80\x0b')
+[DEBUG|inverter.py:212] 2017-12-15 19:36:50,079 > #############  CInverter sendRequest end AccelTime
+[DEBUG|inverter.py:228] 2017-12-15 19:36:50,126 > getResponse ReadData 7, 7
+[DEBUG|inverter.py:229] 2017-12-15 19:36:50,128 > b'\x01\x04\x02\x0028\xe5'
+[DEBUG|inverter.py:230] 2017-12-15 19:36:50,129 > [1, 4, 2, 0, 50, 56, 229]
+[DEBUG|inverter.py:244] 2017-12-15 19:36:50,130 > $$$$$$$$$$$  CInverter getResponse is OK, Data is 50
+[DEBUG|inverter.py:189] 2017-12-15 19:36:50,832 > CInverter sendRequest start DecelTime
+[DEBUG|inverter.py:206] 2017-12-15 19:36:50,833 > [1, 4, 0, 8, 0, 1, 176, 8]
+[DEBUG|inverter.py:207] 2017-12-15 19:36:50,835 > bytearray(b'\x01\x04\x00\x08\x00\x01\xb0\x08')
+[DEBUG|inverter.py:212] 2017-12-15 19:36:50,837 > #############  CInverter sendRequest end DecelTime
+[DEBUG|inverter.py:228] 2017-12-15 19:36:50,882 > getResponse ReadData 7, 7
+[DEBUG|inverter.py:229] 2017-12-15 19:36:50,884 > b'\x01\x04\x02\x00\x00\xb90'
+[DEBUG|inverter.py:230] 2017-12-15 19:36:50,886 > [1, 4, 2, 0, 0, 185, 48]
+[DEBUG|inverter.py:244] 2017-12-15 19:36:50,888 > $$$$$$$$$$$  CInverter getResponse is OK, Data is 0
+[DEBUG|inverter.py:189] 2017-12-15 19:36:51,590 > CInverter sendRequest start OutputFreq
+[DEBUG|inverter.py:206] 2017-12-15 19:36:51,592 > [1, 4, 0, 10, 0, 1, 17, 200]
+[DEBUG|inverter.py:207] 2017-12-15 19:36:51,593 > bytearray(b'\x01\x04\x00\n\x00\x01\x11\xc8')
+[DEBUG|inverter.py:212] 2017-12-15 19:36:51,595 > #############  CInverter sendRequest end OutputFreq
+[DEBUG|inverter.py:228] 2017-12-15 19:36:51,641 > getResponse ReadData 7, 7
+[DEBUG|inverter.py:229] 2017-12-15 19:36:51,643 > b'\x01\x04\x02\x00\x00\xb90'
+[DEBUG|inverter.py:230] 2017-12-15 19:36:51,647 > [1, 4, 2, 0, 0, 185, 48]
+[DEBUG|inverter.py:244] 2017-12-15 19:36:51,656 > $$$$$$$$$$$  CInverter getResponse is OK, Data is 0
+[DEBUG|inverter.py:189] 2017-12-15 19:36:52,358 > CInverter sendRequest start RPM
+[DEBUG|inverter.py:206] 2017-12-15 19:36:52,360 > [1, 4, 0, 21, 0, 1, 32, 14]
+[DEBUG|inverter.py:207] 2017-12-15 19:36:52,361 > bytearray(b'\x01\x04\x00\x15\x00\x01 \x0e')
+[DEBUG|inverter.py:212] 2017-12-15 19:36:52,363 > #############  CInverter sendRequest end RPM
+[DEBUG|inverter.py:228] 2017-12-15 19:36:57,406 > getResponse ReadData 5, 5
+[DEBUG|inverter.py:229] 2017-12-15 19:36:57,407 > b'\x01\x84\x02\xc2\xc1'
+[DEBUG|inverter.py:230] 2017-12-15 19:36:57,409 > [1, 132, 2, 194, 193]
+[DEBUG|inverter.py:353] 2017-12-15 19:36:57,411 > CInverter motorFaultReset
+[DEBUG|inverter.py:354] 2017-12-15 19:36:57,413 > Model 0
+[DEBUG|inverter.py:355] 2017-12-15 19:36:57,414 > Power 0
+[DEBUG|inverter.py:356] 2017-12-15 19:36:57,415 > Input Voltage 39
+[DEBUG|inverter.py:357] 2017-12-15 19:36:57,417 > Version 1
+[DEBUG|inverter.py:358] 2017-12-15 19:36:57,418 > Command Freq 5057
+[DEBUG|inverter.py:359] 2017-12-15 19:36:57,420 > OP Command 0
+[DEBUG|inverter.py:360] 2017-12-15 19:36:57,421 > Accel Time 50
+[DEBUG|inverter.py:361] 2017-12-15 19:36:57,422 > Decel Time 0
+[DEBUG|inverter.py:362] 2017-12-15 19:36:57,424 > Output Freq 0
+[DEBUG|inverter.py:363] 2017-12-15 19:36:57,426 > RPM 0
+[DEBUG|inverter.py:69] 2017-12-15 19:39:30,679 > (1) comport COM3
+[DEBUG|inverter.py:84] 2017-12-15 19:39:30,679 > (2) comport COM3
+[DEBUG|inverter.py:99] 2017-12-15 19:39:30,695 > Serial<id=0x2ebf198, open=True>(port='COM3', baudrate=9600, bytesize=8, parity='N', stopbits=2, timeout=5, xonxoff=False, rtscts=False, dsrdtr=False)
+[DEBUG|inverter.py:100] 2017-12-15 19:39:30,695 > CInverter Initialize serial comm
+[DEBUG|inverter.py:81] 2017-12-15 19:39:30,695 > CInverter __init__
+[DEBUG|inverter.py:189] 2017-12-15 19:39:33,177 > CInverter sendRequest start Model
+[DEBUG|inverter.py:206] 2017-12-15 19:39:33,179 > [1, 4, 0, 0, 0, 1, 49, 202]
+[DEBUG|inverter.py:207] 2017-12-15 19:39:33,180 > bytearray(b'\x01\x04\x00\x00\x00\x011\xca')
+[DEBUG|inverter.py:212] 2017-12-15 19:39:33,182 > #############  CInverter sendRequest end Model
+[DEBUG|inverter.py:228] 2017-12-15 19:39:33,227 > getResponse ReadData 7, 7
