@@ -70,10 +70,10 @@ inverOpStatus = {
     'DCBracking'        : 0b01000000,
 }
 
-InvRun = 1
-InvRFRun = 2
-InvTripReset = 3
-InvFreeRunStop = 4
+InvRun = 0
+InvRFRun = 1
+InvTripReset = 2
+InvFreeRunStop = 3
 
 class CInverter:
     def __init__(self, commPort):
@@ -114,7 +114,7 @@ class CInverter:
         log.logger.debug("CInverter Initialize serial comm port complete")
 
 
-    def getInvModel(data):
+    def getInvModel(self, data):
         if data == 0x000A:
             model = 'iG5A'
         else:
@@ -123,7 +123,7 @@ class CInverter:
         log.logger.debug("CInverter getInvModel : data is {0:x}, model is {1}".format(data, model))
         return model
 
-    def getInvPower(data):
+    def getInvPower(self, data):
         if data == 0x0019:
             invPower = '0.4kW'
         elif data == 0x3200:
@@ -154,7 +154,7 @@ class CInverter:
         log.logger.debug("CInverter getInvPower : data is {0:x}, power is {1}".format(data, invPower))
         return invPower
 
-    def getInvInputVol(data):
+    def getInvInputVol(self, data):
         if data == 0x0220:
             inputVol = '200V 단상 자냉'
         elif data == 0x0230:
@@ -175,7 +175,7 @@ class CInverter:
             inputVol = 'Invalid Voltage'
             
         log.logger.debug("CInverter getInvInputVol : data is {0:x}, input vol. is {1}".format(data, inputVol))
-        return invPower
+        return inputVol
 
 
     def getInverterStatus(self):
@@ -187,7 +187,7 @@ class CInverter:
         if res == 'NG':
             return res
         self.Model = self.getInvModel(readData)
-        time.sleep(0.7)     # 700 msec
+        time.sleep(0.1)     # 100 msec
 
         # get Inverter Power
         self.sendRequest('Power')
@@ -195,7 +195,7 @@ class CInverter:
         if res == 'NG':
             return res
         self.power = self.getInvPower(readData) 
-        time.sleep(0.7)
+        time.sleep(0.1)
       
         # get Inverter Input Voltage
         self.sendRequest('InputVol')
@@ -203,7 +203,7 @@ class CInverter:
         if res == 'NG':  
             return res
         self.inputValtage = self.getInvInputVol(readData) 
-        time.sleep(0.7)
+        time.sleep(0.1)
 
         # get Inverter Version
         self.sendRequest('Version')
@@ -211,7 +211,7 @@ class CInverter:
         if res == 'NG':
             return res
         self.version = readData 
-        time.sleep(0.7)
+        time.sleep(0.1)
 
        # get Inverter Operation Status
         self.sendRequest('OpStatus')
@@ -219,7 +219,7 @@ class CInverter:
         if res == 'NG':
             return res
         self.status = readData 
-        time.sleep(0.7)
+        time.sleep(0.1)
 
         # get Inverter Output Current
         self.sendRequest('OutputCurrent')
@@ -227,7 +227,7 @@ class CInverter:
         if res == 'NG':  
             return res
         self.outputCurrent = readData 
-        time.sleep(0.7)
+        time.sleep(0.1)
 
         # get Inverter Output Frequency
         self.sendRequest('OutputFreq')
@@ -235,7 +235,7 @@ class CInverter:
         if res == 'NG':  
             return res
         self.outputFreq = readData 
-        time.sleep(0.7)
+        time.sleep(0.1)
 
         # get Inverter RPM
         self.sendRequest('RPM')
@@ -243,6 +243,7 @@ class CInverter:
         if res == 'NG':  
             return res
         self.rpm = readData 
+        time.sleep(0.1)
 
         # get Inverter Out Voltage
         self.sendRequest('OutputVol')
@@ -250,6 +251,7 @@ class CInverter:
         if res == 'NG':  
             return res
         self.outputVol = readData 
+        time.sleep(0.1)
 
         # get Inverter Command Frequency
         self.sendRequest('CommandFreq')
@@ -257,14 +259,14 @@ class CInverter:
         if res == 'NG':  
             return res
         self.commandFreq = readData 
-        time.sleep(0.7)
+        time.sleep(0.1)
 
         # get Inverter Operation Command Option
         self.sendRequest('OpCommand')
         res, readData = self.getResponse()
         if res == 'NG':  
             return res
-        time.sleep(0.7)    
+        time.sleep(0.1)    
 
         # get Inverter Accelation Time
         self.sendRequest('AccelTime')
@@ -272,7 +274,7 @@ class CInverter:
         if res == 'NG':  
             return res
         self.accelTime = readData 
-        time.sleep(0.7)
+        time.sleep(0.1)
 
         # get Inverter Decelation Time
         self.sendRequest('DecelTime')
@@ -280,7 +282,6 @@ class CInverter:
         if res == 'NG':  
             return res
         self.decelTime = readData 
-        time.sleep(0.7)
             
         log.logger.debug("CInverter getInverterStatus complete")
 
@@ -408,7 +409,7 @@ class CInverter:
         return res
 
     def sendParameter(self, addr, param):
-        log.logger.debug("###  CInverter sendParameter start : Address is {0:x}, Param is {1}".format(addr, param)) 
+        log.logger.debug("###  CInverter sendParameter start : Address is {0}, Param is {1}".format(addr, param)) 
 
         wData, count = self.sendWriteData(addr, param)
         res = self.getWriteResponse(wData, count)
@@ -417,19 +418,19 @@ class CInverter:
         
         return res
 
-    def isBitOn(data, bit):
+    def isBitOn(self, data, bit):
         data &= (0x01 << bit)
-        log.logger.debug("###  CInverter isBitOn : Data is {0:x}".format(data))        
+        log.logger.debug("###  CInverter isBitOn : Data is {0:b}".format(data))        
 
         return data
 
-    def bitSet(data, bit, bitOn):
+    def bitSet(self, data, bit, bitOn):
         if bitOn:   
             data |= (0x01 << bit)
         else:
             data &= ~(0x01 << bit)
 
-        log.logger.debug("###  CInverter bitSet : Data is {0:x}".format(data))        
+        log.logger.debug("###  CInverter bitSet : Data is {0:b}".format(data))        
 
         return data
 
@@ -446,11 +447,11 @@ class CInverter:
                 return
                 
             if direction == True:   # 정회전
-                opCommand = self.bitSet(InvRFRun, True)
+                opCommand = self.bitSet(opCommand, InvRFRun, True)
             else:                   # 역회전
-                opCommand = self.bitSet(InvRFRun, False)
+                opCommand = self.bitSet(opCommand, InvRFRun, False)
 
-            opCommand = self.bitSet(InvRun, True)
+            opCommand = self.bitSet(opCommand, InvRun, True)
             log.logger.debug("###  CInverter runMotor command set : data is {0:x}".format(opCommand)) 
                 
             wData, count = self.sendWriteData('OpCommand', opCommand)
@@ -507,8 +508,8 @@ class CInverter:
     def updateInverterStatus(self):
         log.logger.debug("CInverter motorFaultReset")         
         log.logger.debug("Model {0}".format(self.Model))
-        log.logger.debug("Power {0:x}".format(self.power))
-        log.logger.debug("Input Voltage {0:d}".format(self.inputValtage))
+        log.logger.debug("Power {0}".format(self.power))
+        log.logger.debug("Input Voltage {0}".format(self.inputValtage))
         log.logger.debug("Version {0:x}".format(self.version))
         log.logger.debug("Command Freq {0:d}".format(self.commandFreq))
         log.logger.debug("OP Command {0:x}".format(self.opCommand))

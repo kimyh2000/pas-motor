@@ -20,7 +20,7 @@ class InvWindow(QMainWindow, form_class):
         
     def initializeDevice(self):
         self.inveter = inv.CInverter('COM4')
-        #self.updateInverterStatus()
+        self.updateInverterStatus()
 
     def updateInverterStatus(self):
         self.inveter.getInverterStatus()
@@ -36,11 +36,11 @@ class InvWindow(QMainWindow, form_class):
         data = "Input Voltage is {0}".format(self.inveter.inputValtage)
         self.textEdit_InvInfo.append(data)
 
-        data = "Software Version is {0}".format(self.inveter.version)
+        data = "Software Version is 0x{0:02x}".format(self.inveter.version)
         self.textEdit_InvInfo.append(data)
 
-        data = "Command Frequency is {0}".format(self.inveter.commandFreq)
-        self.textEdit_InvInfo.append(data)
+        #data = "Command Frequency is {0}".format(self.inveter.commandFreq)
+        #self.textEdit_InvInfo.append(data)
 
         #data = "Operating Command is {0:x}".format(self.inveter.opCommand)
         #self.textEdit_InvInfo.append(data)
@@ -51,11 +51,11 @@ class InvWindow(QMainWindow, form_class):
         data = "Decelation time is {0}".format(self.inveter.decelTime)
         self.textEdit_InvInfo.append(data)
 
-        data = "Output Frequency is {0}".format(self.inveter.outputFreq)
-        self.textEdit_InvInfo.append(data)
+        #data = "Output Frequency is {0}".format(self.inveter.outputFreq)
+        #self.textEdit_InvInfo.append(data)
 
-        data = "Motor RPM is {0}".format(self.inveter.rpm)
-        self.textEdit_InvInfo.append(data)
+        #data = "Motor RPM is {0}".format(self.inveter.rpm)
+        #self.textEdit_InvInfo.append(data)
 
         
     def initializeUiSignal(self):
@@ -79,28 +79,26 @@ class InvWindow(QMainWindow, form_class):
 
         # quit program signal
         self.pushButton_Exit.clicked.connect(self.btnClicked_Exit)
+        self.pushButton_Exit.setVisible(False)
 
         # Edit command frequency
         self.lineEdit_Frq.setAlignment(Qt.AlignRight)
-        self.lineEdit_Frq.setText("40.00")  # Default Value : 40.00 Hz
         self.lineEdit_Frq.setValidator(QDoubleValidator(0.00, 60.00, 2))    # 0.00 Hz : Min, 60.00 Hz : Max
         self.lineEdit_Frq.editingFinished.connect(self.textChanged_Frq)
+        self.lineEdit_Frq.setText("40.00")  # Default Value : 40.00 Hz
+        self.invCommandFraq = int(float(self.lineEdit_Frq.text()) * 100)
 
         # Edit Accelation time
         self.lineEdit_AccTime.setAlignment(Qt.AlignRight)
-        self.lineEdit_AccTime.setText("5")
         self.lineEdit_AccTime.setValidator(QIntValidator(0, 6000))
         self.lineEdit_AccTime.editingFinished.connect(self.textChanged_AccTime)
+        self.lineEdit_AccTime.setText("5")
 
         # Edit decelation time
         self.lineEdit_DecTime.setAlignment(Qt.AlignRight)
         self.lineEdit_DecTime.setText("10")
         self.lineEdit_DecTime.setValidator(QIntValidator(0, 6000))
         self.lineEdit_DecTime.editingFinished.connect(self.textChanged_DecTime)
-
-        # Label current frequency
-        self.label_CurFrq.setAlignment(Qt.AlignRight)
-        self.label_CurFrq.setText("0.00")
 
         # Edit others (doesn't use)
         self.lineEdit_OpTime.textChanged.connect(self.textChanged_OpTime)
@@ -115,7 +113,7 @@ class InvWindow(QMainWindow, form_class):
 
     def textChanged_Frq(self):
         strValue = self.lineEdit_Frq.text()
-        self.invCommandFraq = float(strValue) * 100
+        self.invCommandFraq = int(float(strValue) * 100)
         log.logger.debug("textChanged_Frq : Command Frequency is {0}, {1:d}".format(strValue, self.invCommandFraq))
         #self.inveter.sendParameter('CommandFreq', self.invCommandFraq)
         
@@ -144,6 +142,7 @@ class InvWindow(QMainWindow, form_class):
     # setup buttons slot 
     def btnClicked_Update(self):
         log.logger.debug("btnClicked_Update : Command is INVERTER STATUS")
+        self.textEdit_InvInfo.clear()
         self.updateInverterStatus()
     
     def btnClicked_FrontRun(self):
