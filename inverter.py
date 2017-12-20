@@ -91,7 +91,7 @@ class CInverter:
         self.opCommand = 0x0000
         self.accelTime = 0
         self.decelTime = 0
-        #self.initSerialComm(commPort)
+        self.initSerialComm(commPort)
         log.logger.debug("CInverter __init__ Complete")
 
     def initSerialComm(self, commPort):
@@ -113,6 +113,71 @@ class CInverter:
         log.logger.debug(self.ser)            
         log.logger.debug("CInverter Initialize serial comm port complete")
 
+
+    def getInvModel(data):
+        if data == 0x000A:
+            model = 'iG5A'
+        else:
+            model = 'LS None Model'
+
+        log.logger.debug("CInverter getInvModel : data is {0:x}, model is {1}".format(data, model))
+        return model
+
+    def getInvPower(data):
+        if data == 0x0019:
+            invPower = '0.4kW'
+        elif data == 0x3200:
+            invPower = '0.75kW'
+        elif data == 0x4015:
+            invPower = '1.5kW'
+        elif data == 0x4022:
+            invPower = '2.2kW'
+        elif data == 0x4037:
+            invPower = '3.7kW'
+        elif data == 0x4040:
+            invPower = '4.0kW'
+        elif data == 0x4055:
+            invPower = '5.5kW'
+        elif data == 0x4075:
+            invPower = '7.5kW'
+        elif data == 0x4080:
+            invPower = '11kW'
+        elif data == 0x40F0:
+            invPower = '15kW'
+        elif data == 0x4125:
+            invPower = '18.5kW'
+        elif data == 0x4160:
+            invPower = '22kW'
+        else:
+            invPower = 'Invalid Power'
+
+        log.logger.debug("CInverter getInvPower : data is {0:x}, power is {1}".format(data, invPower))
+        return invPower
+
+    def getInvInputVol(data):
+        if data == 0x0220:
+            inputVol = '200V 단상 자냉'
+        elif data == 0x0230:
+            inputVol = '200V 삼상 자냉'
+        elif data == 0x0221:
+            inputVol = '200V 단상 강냉'
+        elif data == 0x0231:
+            inputVol = '200V 삼상 강냉'
+        elif data == 0x0420:
+            inputVol = '400V 단상 자냉'
+        elif data == 0x0430:
+            inputVol = '400V 삼상 자냉'
+        elif data == 0x0421:
+            inputVol = '400V 단상 강냉'
+        elif data == 0x0431:
+            inputVol = '400V 삼상 강냉'
+        else:
+            inputVol = 'Invalid Voltage'
+            
+        log.logger.debug("CInverter getInvInputVol : data is {0:x}, input vol. is {1}".format(data, inputVol))
+        return invPower
+
+
     def getInverterStatus(self):
         res = 'OK'
         
@@ -121,7 +186,7 @@ class CInverter:
         res, readData = self.getResponse()
         if res == 'NG':
             return res
-        self.Model = readData
+        self.Model = self.getInvModel(readData)
         time.sleep(0.7)     # 700 msec
 
         # get Inverter Power
@@ -129,7 +194,7 @@ class CInverter:
         res, readData = self.getResponse()
         if res == 'NG':
             return res
-        self.power = readData 
+        self.power = self.getInvPower(readData) 
         time.sleep(0.7)
       
         # get Inverter Input Voltage
@@ -137,7 +202,7 @@ class CInverter:
         res, readData = self.getResponse()
         if res == 'NG':  
             return res
-        self.inputValtage = readData 
+        self.inputValtage = self.getInvInputVol(readData) 
         time.sleep(0.7)
 
         # get Inverter Version
@@ -217,18 +282,21 @@ class CInverter:
         self.decelTime = readData 
         time.sleep(0.7)
             
-        log.logger.debug("CInverter getInverterStatus")
+        log.logger.debug("CInverter getInverterStatus complete")
 
         return res
 
     def sendRequest(self, readMem, regCount=1):
-        log.logger.debug("CInverter sendRequest start {0}".format(readMem))
+        log.logger.debug("###  CInverter sendRequest start {0}".format(readMem))
 
         dataFrame = []
         dataFrame.append(slaveDevice['inverterLS'])        # Slave No.
         dataFrame.append(FunctionCode['readInputReg'])     # Function Code
 
-        addr = inverParamList[readMem] -1
+        # !!!! 중요 !!!!
+        # LS 산전 iG5A Inverter 메뉴얼 오류로 인해
+        # 메뉴얼에 표기되어 있는 확정 공통영역 주소에서 -1 을 위치에서 데이터 읽어야 함 
+        addr = inverParamList[readMem] - 1
         dataFrame.append(addr >> 8)     # Memory Address Hi
         dataFrame.append(addr & 0xFF)   # Memory Address Low
 
@@ -242,11 +310,10 @@ class CInverter:
 
         log.logger.debug(dataFrame)
         log.logger.debug(bytearray(dataFrame))
-        #log.logger.debug(self.ser)
 
         self.ser.write(bytearray(dataFrame))
 
-        log.logger.debug("#############  CInverter sendRequest end {0}".format(readMem))
+        log.logger.debug("###  CInverter sendRequest end {0}".format(readMem))
 
 
     #
@@ -259,26 +326,27 @@ class CInverter:
         res = 'OK'
         readValue = 0;
         
-        #readData = [0x01, 0x04, 0x02, 0x12, 0x34, 0xA1, 0xB1]
         readByteData = self.ser.read(BytesToRead)
         readData = list(readByteData)
-        log.logger.debug("getResponse ReadData {0}, {1}".format(len(readByteData), len(readData)))
+
+        log.logger.debug("###  CInverter getResponse start : ReadData Count is {0}, {1}".format(len(readByteData), len(readData)))
         log.logger.debug(readByteData)
         log.logger.debug(readData)
 
 #        if len(readData) < BytesToRead:
 #            res = 'NG'
+
         if len(readData) >= BytesToRead:      
             if (readData[0] != slaveDevice['inverterLS']) or (readData[1] != FunctionCode['readInputReg']):
                 res = 'NG'
+                log.logger.debug("###  CInverter getResponse Error : Res is {0}, Data is {1}".format(res, readData))
             
             # Word 단위로 변경함
             if res == 'OK':
                 temp = readData[3:5]
                 readValue = temp[0] << 8
-                readValue |= temp[1]
-            
-            log.logger.debug("$$$$$$$$$$$  CInverter getResponse is {0}, Data is {1}".format(res, readValue))
+                readValue |= temp[1]      
+                log.logger.debug("###  CInverter getResponse complete : Res is {0}, Data is {1}".format(res, readValue))
         else:
             res = 'NG'
 
@@ -286,21 +354,18 @@ class CInverter:
 
 
     # 16 Bit 단위로 데이터 요청함
-    # Dara = Address(1 Byte) + Function(1 Byte) + start Add(2 Byte) + Register 수 (2 Byte) + Byte Count(1 Byte) + Data(Word) + CRC(2 Byte) =11   
+    # Data = Device ID(1 Byte) + Function(1 Byte) + start Address(2 Byte) + Data(Word:2 Byte) + CRC(2 Byte) =8 Byte   
     def sendWriteData(self, readMem, writeData):
         dataFrame = []
         dataFrame.append(slaveDevice['inverterLS'])        # Slave No.
         dataFrame.append(FunctionCode['presetSingleReg'])     # Function Code
 
+        # !!!! 중요 !!!!
+        # LS 산전 iG5A Inverter 메뉴얼 오류로 인해
+        # 메뉴얼에 표기되어 있는 확정 공통영역 주소에서 -1 을 위치에서 데이터 읽어야 함 
         addr = inverParamList[readMem] - 1
         dataFrame.append(addr >> 8)     # Memory Address Hi
         dataFrame.append(addr & 0xFF)   # Memory Address Low
-
-        # Quantity Of Registers
-        #dataFrame.append(regCount >> 8)     # Quantity Of Registers Hi
-        #dataFrame.append(regCount & 0xFF)   # Quantity Of Registers Low
-
-        #dataFrame.append(byteCount)        # Write data count
 
         # Write Data
         dataFrame.append(writeData >> 8)     # Write Data Hi
@@ -310,19 +375,18 @@ class CInverter:
         crc = modbusCRC.CRC16(dataFrame)    # Make CRC Checksum
         dataFrame.append(crc & 0xFF)        # CRC Low
         dataFrame.append(crc >> 8)          # CRC Hi
-        log.logger.debug(crc)
 
         log.logger.debug(dataFrame)
         log.logger.debug(bytearray(dataFrame))
         self.ser.write(bytearray(dataFrame))
 
-        log.logger.debug("CInverter sendWriteData")
+        log.logger.debug("### CInverter sendWriteData complete")
 
         return writeData, len(dataFrame)
 
     #
     # get response from Inverter
-    # BytesToRead = Address(1 Byte) + Function(1 Byte) + 시작 Address(2 Byte) + 제어 Register(2 Byte) + CRC(2 Byte) = 8
+    # Read Data = Device ID(1 Byte) + Function(1 Byte) + start Address(2 Byte) + Data(Word:2 Byte) + CRC(2 Byte) =8 Byte   
     # response :
     #   - OK/NG
     #   - readData List
@@ -330,29 +394,33 @@ class CInverter:
         res = 'OK'
         readValue = 0;
         
-        #readData = [0x01, 0x10, 0x00, 0x06, 0x01, 0x02, 0x11, 0x12]
         readData = list(self.ser.read(BytesToRead))
         if len(readData) < BytesToRead:
             res = 'NG'
         
         if readData[0] != slaveDevice['inverterLS'] or readData[1] != FunctionCode['presetSingleReg']:
             res = 'NG'
+            log.logger.debug("###  CInverter getWriteResponse Error : Res is {0}, Data is {1}".format(res, readData))
 
 
-        log.logger.debug("-----------CInverter getWriteResponse is {0}".format(res))       
+        log.logger.debug("###  CInverter getWriteResponse Complete : Res is {0}".format(res))       
         
         return res
 
     def sendParameter(self, addr, param):
+        log.logger.debug("###  CInverter sendParameter start : Address is {0:x}, Param is {1}".format(addr, param)) 
+
         wData, count = self.sendWriteData(addr, param)
         res = self.getWriteResponse(wData, count)
 
-        log.logger.debug("CInverter runMotor {0}, {1}".format(wData, count)) 
+        log.logger.debug("###  CInverter sendParameter end : Res is {0}".format(res)) 
         
         return res
 
     def isBitOn(data, bit):
         data &= (0x01 << bit)
+        log.logger.debug("###  CInverter isBitOn : Data is {0:x}".format(data))        
+
         return data
 
     def bitSet(data, bit, bitOn):
@@ -361,38 +429,42 @@ class CInverter:
         else:
             data &= ~(0x01 << bit)
 
+        log.logger.debug("###  CInverter bitSet : Data is {0:x}".format(data))        
+
         return data
 
 
     def runMotor(self, direction = True):
         self.sendRequest('OpCommand')
         res, opCommand = self.getResponse()
-        log.logger.debug("(1) CInverter runMotor {0}, {1:x}".format(opCommand, opCommand)) 
+
+        log.logger.debug("###  CInverter runMotor start : Direction is {0}, Res is {1}, OpCommand is {2:x}".format(direction, res, opCommand)) 
         
         if res == 'OK':
             if self.isBitOn(opCommand, InvRun): 
-                log.logger.debug("(2) CInverter Motor is already Running") 
+                log.logger.debug("###  CInverter runMotor : Motor is already Running") 
                 return
                 
-            if direction == True:
+            if direction == True:   # 정회전
                 opCommand = self.bitSet(InvRFRun, True)
-            else:
+            else:                   # 역회전
                 opCommand = self.bitSet(InvRFRun, False)
 
             opCommand = self.bitSet(InvRun, True)
-            log.logger.debug("(3) CInverter runMotor {0}, {1:x}".format(opCommand, opCommand)) 
+            log.logger.debug("###  CInverter runMotor command set : data is {0:x}".format(opCommand)) 
                 
             wData, count = self.sendWriteData('OpCommand', opCommand)
             res = self.getWriteResponse(wData, count)
         
-            log.logger.debug("CInverter runMotor : Motor Run, Direction {0}".format(direction)) 
+            log.logger.debug("###  CInverter runMotor end") 
 
         return res        
         
     def motorStop(self, emgStop = False):
         self.sendRequest('OpCommand')
         res, opCommand = self.getResponse()
-        log.logger.debug("(1) CInverter motorStop {0}, {1:x}".format(opCommand, opCommand)) 
+
+        log.logger.debug("###  CInverter motorStop start : EMG is {0}, Res is {1}, OpCommand is {2:x}".format(emgStop, res, opCommand)) 
         
         if res == 'OK':
             if emgStop == True:
@@ -401,33 +473,34 @@ class CInverter:
                 opCommand = self.bitSet(opCommand, InvFreeRunStop, False)
                 
             opCommand = self.bitSet(opCommand, InvRun, False)
-
-            log.logger.debug("(2) CInverter motorStop {0}, {1:x}".format(opCommand, opCommand)) 
+            log.logger.debug("###  CInverter motorStop command set : data is {0:x}".format(opCommand)) 
                 
             wData, count = self.sendWriteData('OpCommand', opCommand)
             res = self.getWriteResponse(wData, count)
         
-            log.logger.debug("CInverter motorStop : Free Reset is {0}".format(emgStop)) 
+            log.logger.debug("###  CInverter motorStop end") 
 
         return res 
 
     def motorFaultReset(self):
         self.sendRequest('OpCommand')
         res, opCommand = self.getResponse()
-        log.logger.debug("Before : motorFaultReset{0} {1:x}".format(res, opCommand))
+
+        log.logger.debug("###  CInverter motorFaultReset start : Res is {0}, OpCommand is {1:x}".format(res, opCommand)) 
 
         if res == 'OK':
             if self.isBitOn(opCommand, InvRun): 
-                log.logger.debug("CInverter Motor is already Running") 
+                log.logger.debug("###  CInverter motorFaultReset : Motor is already Running") 
                 return
             
             opCommand = self.bitSet(opCommand, InvTripReset, True)
+            log.logger.debug("###  CInverter motorFaultReset command set : data is {0:x}".format(opCommand)) 
 
             wData, count = self.sendWriteData('OpCommand', opCommand)
             res = self.getWriteResponse(wData, count)
 
-        log.logger.debug("After : motorFaultReset{0} {1:x}".format(res, opCommand))
-        log.logger.debug("CInverter motorFaultReset")         
+            log.logger.debug("###  CInverter motorFaultReset end") 
+
         return res 
 
 
