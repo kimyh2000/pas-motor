@@ -32,7 +32,7 @@
      </font>
     </property>
     <property name="text">
-     <string>한화/기계 모터 전류 분석용 인버터 Control 메뉴</string>
+     <string>한화/기계 모터 전류 분석용 Control Tool</string>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton_FrontRun">
