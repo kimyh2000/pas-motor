@@ -6,8 +6,9 @@
 """
 
 import logger as log
+import time
 from pyModbusTCP.client import ModbusClient
-#from pymodbus.client.sync import ModbusTcpClient as ModbusClient
+
 
 SERVER_HOST = "169.254.0.10"
 SERVER_PORT = 502
@@ -25,9 +26,7 @@ def print_menu():
 
 if __name__ == '__main__':
     log.logger.debug("EOCR Start !!!")
-    #client = ModbusClient(SERVER_HOST, SERVER_PORT, auto_open=True)
-    client = ModbusClient(host= SERVER_HOST)
-
+    client = ModbusClient(SERVER_HOST, SERVER_PORT, auto_open=True)
     log.logger.debug(client)
     
     if not client.is_open():
@@ -36,13 +35,15 @@ if __name__ == '__main__':
     
     if client.is_open():
         log.logger.debug("Modudbus TCP Open OK !!!")
-        
-        currentIL1 = client.read_holding_register(522, 2)
-        currentIL2 = client.read_holding_register(524, 2)
-        currentIL3 = client.read_holding_register(526, 2)
-        log.logger.debug("IL1 Current : {0}".format(currentIL1))
-        log.logger.debug("IL2 Current : {0}".format(currentIL2))
-        log.logger.debug("IL3 Current : {0}".format(currentIL3))
-        
+
+        while True:        
+            currentIL1 = client.read_holding_registers(522, 2)
+            currentIL2 = client.read_holding_registers(524, 2)
+            currentIL3 = client.read_holding_registers(526, 2)
+            log.logger.debug("IL1 Current : {0}".format(currentIL1))
+            log.logger.debug("IL2 Current : {0}".format(currentIL2))
+            log.logger.debug("IL3 Current : {0}".format(currentIL3))
+            
+            time.sleep(0.3)
         
     
