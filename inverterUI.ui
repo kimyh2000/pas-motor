@@ -17,9 +17,9 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
       <y>10</y>
-      <width>221</width>
+      <width>361</width>
       <height>31</height>
      </rect>
     </property>
@@ -32,7 +32,7 @@
      </font>
     </property>
     <property name="text">
-     <string>LS 산전 인버터 Control 메뉴</string>
+     <string>한화/기계 모터 전류 분석용 인버터 Control 메뉴</string>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton_FrontRun">
@@ -437,7 +437,7 @@
    <widget class="QLabel" name="label_15">
     <property name="geometry">
      <rect>
-      <x>340</x>
+      <x>440</x>
       <y>10</y>
       <width>221</width>
       <height>31</height>
@@ -451,8 +451,17 @@
       <bold>true</bold>
      </font>
     </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
     <property name="text">
      <string>인버터 정보</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton_Exit">
@@ -543,16 +552,16 @@
    <widget class="QTextEdit" name="textEdit_InvInfo">
     <property name="geometry">
      <rect>
-      <x>340</x>
+      <x>380</x>
       <y>40</y>
-      <width>341</width>
+      <width>301</width>
       <height>261</height>
      </rect>
     </property>
     <property name="font">
      <font>
       <family>Arial</family>
-      <pointsize>12</pointsize>
+      <pointsize>10</pointsize>
       <weight>75</weight>
       <bold>true</bold>
      </font>
