@@ -38,10 +38,10 @@ class CNRTGT100:
         self.ser.timeout = 5         # 5 sec
         self.ser.write_timeout = 5   # 5 sec        
 
-        if self.ser._isOpen == False:
+        if self.ser.isOpen() == False:
             log.logger.debug("Serial Port is not Open")
             self.ser.open()
-            log.logger.debug("Serial Port is Open {0}".format(self.ser._isOpen))
+            log.logger.debug("Serial Port is Open {0}".format(self.ser.isOpen()))
 
         log.logger.debug(self.ser)            
         log.logger.debug("CNrtGT100 Initialize serial comm")
@@ -50,55 +50,59 @@ class CNRTGT100:
     #
     #
     def sendRequest(self, commandType, runCommand, outPWM = 0):
-        log.logger.debug("CNRTGT100 sendRequest start {0}, {1}, {2}".format(commandType, runCommand, outPWM))
+        log.logger.debug("CNRTGT100 sendRequest start {0}, {1}".format(commandType, outPWM))
 
         # index 0 ~ 7
         dataString = '%GT100S#'
 
         # index 8
         if commandType: # True = Commanddata
-            dataString += 'W'
+            dataString2 = 'W'
         else:
-            dataString += 'M'
-
-        log.logger.debug("dataString is {0}".format(dataString))
-        self.ser.write(bytes(dataString.encode()))
+            dataString2 = 'M'
 
         # index 9
-        dataFrame = []
+        dataString2 += str(self.deviceID)
 
-        dataFrame.append(self.deviceID)
-        
         # index 10 ~ 12
         if commandType: # True = Command
-            dataFrame.append(self.opStstus[runCommand])     # Stop = 0x30, Run = 0x31
-            dataFrame.append(outPWM >> 8)   # Memory Address Hi
-            dataFrame.append(outPWM & 0xFF) # Memory Address Low
+            if runCommand :
+                dataString2 += '1'
+            else:
+                dataString2 += '0'    
+            #outPWM = 123
+            dataString2 += '{:02x}'.format(outPWM)
         else:
-            dataFrame.append(0x30)
-            dataFrame.append(0)             # Memory Address Hi
-            dataFrame.append(0x30)          # Memory Address Low
+            dataString2 += '000'
             
         # index 13 ~ 19
-        dataFrame.extend([0, 0, 0, 0, 0, 0])
-        dataFrame.append(0x30)
-
-        # BCC Checksum
-        bcc = self.bccCheckSum(dataFrame)
-        dataFrame.append(bcc)
-        log.logger.debug(dataFrame)
+        dataString2 += '0000000'
+        log.logger.debug(dataString2)
         
-        self.ser.write(bytearray(dataFrame))
-
-        dataString = '\n\r'
+        # BCC Checksum
+        # index 20, 21
+        bcc = self.bccCheckSum(dataString2)     
+        dataString2 += '{:02x}'.format(bcc)
+        log.logger.debug(dataString2)
+        
+        dataString2 += '\r\n'
+        dataString += dataString2
+        log.logger.debug(dataString)
+        
         self.ser.write(bytes(dataString.encode()))
+        
+        log.logger.debug("CNrtGT100 sendRequest end {0}".format(outPWM))
 
-        log.logger.debug("CNrtGT100 sendRequest end {0}, {1}".format(runCommand, outPWM))
-
-        if commandType: # True = Commanddata
-            self.getCommandResponse()
-        else:
-            self.getMonitoringResponse()
+        ####
+        #datax = [0x25, 0x47, 0x54, 0x31, 0x30, 0x30, 0x53, 0x23, 0x4d, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x37, 0x44, 0x0d, 0x0a]
+        #log.logger.debug(datax)
+        #self.ser.write(bytearray(datax))
+        
+        ###
+        #if commandType: # True = Command data
+        #    self.getCommandResponse()
+        #else:
+        #    self.getMonitoringResponse()
 
         log.logger.debug("CNrtGT100 Response end")
         
@@ -168,7 +172,15 @@ class CNRTGT100:
 
     def getMonitoringResponse(self, BytesToRead = 23):    
         res = 'OK'
-        
+        while True:
+            BytesToRead = self.ser.inWaiting()
+            if BytesToRead < 10:
+                log.logger.debug("readByte {0}".format(BytesToRead))
+                time.sleep(0.7)     # 700 msec
+                continue
+            else:
+                break
+
         readData = self.ser.read(BytesToRead)
         log.logger.debug("read Data is {0}, {1},  {2:d}, Data receive OK !!!".format(readData, readData.decode(), BytesToRead))
 
@@ -224,12 +236,12 @@ class CNRTGT100:
         return 'OK'    
 
 
-    def bccCheckSum(self, dataFrame):
-        log.logger.debug("BCC data frame is {0}".format(dataFrame))
+    def bccCheckSum(self, dataString):
+        log.logger.debug("BCC data String is {0}".format(dataString))
 
         bcc = 0
-        for data in dataFrame:
-            bcc ^= data
+        for data in dataString:
+            bcc ^= ord(data)
             #log.logger.debug(" BCC is {0:x}, {1:x}".format(data, bcc))
 
         log.logger.debug(" Final BCC is {0:x}, {1}".format(bcc, bcc))

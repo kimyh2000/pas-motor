@@ -19,7 +19,7 @@ class InvWindow(QMainWindow, form_class):
         self.initializeDevice()     # Comm Port 초기화 및 Inverter의 상태를 읽어온다.
         
     def initializeDevice(self):
-        self.inveter = inv.CInverter('COM4')
+        self.inveter = inv.CInverter('COM5')
         self.updateInverterStatus()
 
     def updateInverterStatus(self):
@@ -137,6 +137,12 @@ class InvWindow(QMainWindow, form_class):
         pass
 
     def textChanged_OutVol(self):
+        self.lineEdit_Frq.setAlignment(Qt.AlignRight)
+        self.lineEdit_Frq.setValidator(QDoubleValidator(0.00, 60.00, 2))    # 0.00 Hz : Min, 60.00 Hz : Max
+        self.lineEdit_Frq.editingFinished.connect(self.textChanged_Frq)
+        self.lineEdit_Frq.setText("40.00")  # Default Value : 40.00 Hz
+        self.invCommandFraq = int(float(self.lineEdit_Frq.text()) * 100)
+        
         pass
     
     # setup buttons slot 

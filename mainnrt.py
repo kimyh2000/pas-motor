@@ -10,16 +10,18 @@ def print_menu():
     return int(menu)
 
 def run():
-    nrtGT100 = nrt.CNRTGT100(0, 'COM4')
+    nrtGT100 = nrt.CNRTGT100(0, 'COM6')
 
     while True:
         menu = print_menu()
         if menu == 1:
             nrtGT100.sendRequest(False, 0)
         elif menu == 2: # Start
-            nrtGT100.sendRequest(True, 1, 235)  #23.5 V
-        elif menu == 3: # Stop
-            nrtGT100.sendRequest(True, 0, 179) #
+            nrtGT100.sendRequest(True, True, 235)  #23.5 V
+        elif menu == 3: # Start
+            nrtGT100.sendRequest(True, True, 179) #
+        elif menu == 4: # Stop
+            nrtGT100.sendRequest(True, False, 179) #
         elif menu == 4:
             break
 
