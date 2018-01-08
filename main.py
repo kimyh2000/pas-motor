@@ -7,6 +7,8 @@ from PyQt5.QtGui import *
 from PyQt5 import uic
 
 import inverter as inv
+import nrtgt100 as nrt
+
 #import inverterSim as invSim
 
 form_class = uic.loadUiType("inverterUI.ui")[0]
@@ -20,6 +22,7 @@ class InvWindow(QMainWindow, form_class):
         
     def initializeDevice(self):
         self.inveter = inv.CInverter('COM5')
+        self.nrtGT100 = nrt.CNRTGT100(0, 'COM6')
         self.updateInverterStatus()
 
     def updateInverterStatus(self):
@@ -103,7 +106,12 @@ class InvWindow(QMainWindow, form_class):
         # Edit others (doesn't use)
         self.lineEdit_OpTime.textChanged.connect(self.textChanged_OpTime)
         self.lineEdit_Dist.textChanged.connect(self.textChanged_Dist)
+
+        self.lineEdit_OutVol.setAlignment(Qt.AlignRight)
+        self.lineEdit_OutVol.setValidator(QDoubleValidator(0.0, 24.0, 1))    # 0.0 V : Min, 24.0 V : Max
         self.lineEdit_OutVol.textChanged.connect(self.textChanged_OutVol)
+        self.lineEdit_OutVol.setText("0.00")  # Default Value : 0.0 V
+        self.breakOutVol = int(float(self.lineEdit_OutVol.text()) * 10)
 
         # Show inveter information
         self.textEdit_InvInfo.setReadOnly(True)
@@ -137,13 +145,9 @@ class InvWindow(QMainWindow, form_class):
         pass
 
     def textChanged_OutVol(self):
-        self.lineEdit_Frq.setAlignment(Qt.AlignRight)
-        self.lineEdit_Frq.setValidator(QDoubleValidator(0.00, 60.00, 2))    # 0.00 Hz : Min, 60.00 Hz : Max
-        self.lineEdit_Frq.editingFinished.connect(self.textChanged_Frq)
-        self.lineEdit_Frq.setText("40.00")  # Default Value : 40.00 Hz
-        self.invCommandFraq = int(float(self.lineEdit_Frq.text()) * 100)
-        
-        pass
+        strValue = self.lineEdit_OutVol.text()
+        self.breakOutVol = int(float(strValue) * 10)
+        log.logger.debug("textChanged_OutVol : Command Voltage is {0}, {1:d}".format(strValue, self.breakOutVol))
     
     # setup buttons slot 
     def btnClicked_Update(self):
@@ -204,13 +208,21 @@ class InvWindow(QMainWindow, form_class):
         pass
         
     def btnClicked_BreakStop(self):
-        pass
+        log.logger.debug("btnClicked_BreakStop"")
+        self.nrtGT100.sendRequest(True, False, 0)
         
     def btnClicked_BreakRun(self):
-        pass      
+        strValue = self.lineEdit_OutVol.text()
+        self.breakOutVol = int(float(strValue) * 10)
+        log.logger.debug("btnClicked_BreakRun : Command Voltage is {0:d}".format(self.breakOutVol))
+        self.nrtGT100.sendRequest(True, True, self.breakOutVol)
     
     def btnClicked_ChangeOutVoltage(self):
-        pass
+        strValue = self.lineEdit_OutVol.text()
+        self.breakOutVol = int(float(strValue) * 10)
+        log.logger.debug("btnClicked_ChangeOutVoltage : Command Voltage is {0:d}".format(self.breakOutVol))
+        self.nrtGT100.sendRequest(True, True, self.breakOutVol)
+
         
     def btnClicked_Exit(self):
         pass
