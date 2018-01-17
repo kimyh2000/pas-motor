@@ -29,6 +29,7 @@ class InvWindow(QMainWindow, form_class):
         self.eocr.daemon = True
         self.eocr.start()
         self.updateInverterStatus()
+        self.btnClicked_ChangeFreq()
 
     def updateInverterStatus(self):
         self.inveter.getInverterStatus()
@@ -93,7 +94,7 @@ class InvWindow(QMainWindow, form_class):
         self.lineEdit_Frq.setAlignment(Qt.AlignRight)
         self.lineEdit_Frq.setValidator(QDoubleValidator(0.00, 60.00, 2))    # 0.00 Hz : Min, 60.00 Hz : Max
         self.lineEdit_Frq.editingFinished.connect(self.textChanged_Frq)
-        self.lineEdit_Frq.setText("40.00")  # Default Value : 40.00 Hz
+        self.lineEdit_Frq.setText("30.00")  # Default Value : 40.00 Hz
         self.invCommandFraq = int(float(self.lineEdit_Frq.text()) * 100)
 
         # Edit Accelation time
@@ -115,7 +116,7 @@ class InvWindow(QMainWindow, form_class):
         self.lineEdit_OutVol.setAlignment(Qt.AlignRight)
         self.lineEdit_OutVol.setValidator(QDoubleValidator(0.0, 24.0, 1))    # 0.0 V : Min, 24.0 V : Max
         self.lineEdit_OutVol.textChanged.connect(self.textChanged_OutVol)
-        self.lineEdit_OutVol.setText("0.00")  # Default Value : 0.0 V
+        self.lineEdit_OutVol.setText("0.0")  # Default Value : 0.0 V
         self.breakOutVol = int(float(self.lineEdit_OutVol.text()) * 10)
 
         # Show inveter information
@@ -126,7 +127,7 @@ class InvWindow(QMainWindow, form_class):
 
     def textChanged_Frq(self):
         strValue = self.lineEdit_Frq.text()
-        self.invCommandFraq = int(float(strValue) * 100)
+        self.invCommandFraq = int(float(self.lineEdit_Frq.text()) * 100)
         log.logger.debug("textChanged_Frq : Command Frequency is {0}, {1:d}".format(strValue, self.invCommandFraq))
         #self.inveter.sendParameter('CommandFreq', self.invCommandFraq)
         
@@ -151,7 +152,7 @@ class InvWindow(QMainWindow, form_class):
 
     def textChanged_OutVol(self):
         strValue = self.lineEdit_OutVol.text()
-        self.breakOutVol = int(float(strValue) * 10)
+        self.breakOutVol = int(float(self.lineEdit_OutVol.text()) * 10)
         log.logger.debug("textChanged_OutVol : Command Voltage is {0}, {1:d}".format(strValue, self.breakOutVol))
     
     # setup buttons slot 
@@ -163,7 +164,7 @@ class InvWindow(QMainWindow, form_class):
     def btnClicked_FrontRun(self):
         log.logger.debug("btnClicked_FrontRun : Command is FRONT RUN")
         self.inveter.runMotor(True)
-        self.eocr.setMotorFreq(self.invCommandFraq / 100)
+        self.eocr.setMotorInfo('F', self.invCommandFraq / 100)
         self.eocr.setBreakVoltage(self.breakOutVol / 10)
         self.eocr.eocrResume()
 
@@ -173,7 +174,7 @@ class InvWindow(QMainWindow, form_class):
     def btnClicked_BackRun(self):
         log.logger.debug("btnClicked_FrontRun : Command is BACK RUN")
         self.inveter.runMotor(False)
-        self.eocr.setMotorFreq(self.invCommandFraq / 100)
+        self.eocr.setMotorInfo('R', self.invCommandFraq / 100)
         self.eocr.setBreakVoltage(self.breakOutVol / 10)
         self.eocr.eocrResume()
 
@@ -227,13 +228,13 @@ class InvWindow(QMainWindow, form_class):
         
     def btnClicked_BreakRun(self):
         strValue = self.lineEdit_OutVol.text()
-        self.breakOutVol = int(float(strValue) * 10)
+        self.breakOutVol = int(float(self.lineEdit_OutVol.text()) * 10)
         log.logger.debug("btnClicked_BreakRun : Command Voltage is {0:d}".format(self.breakOutVol))
         self.nrtGT100.sendRequest(True, True, self.breakOutVol)
     
     def btnClicked_ChangeOutVoltage(self):
         strValue = self.lineEdit_OutVol.text()
-        self.breakOutVol = int(float(strValue) * 10)
+        self.breakOutVol = int(float(self.lineEdit_OutVol.text()) * 10)
         log.logger.debug("btnClicked_ChangeOutVoltage : Command Voltage is {0:d}".format(self.breakOutVol))
         self.nrtGT100.sendRequest(True, True, self.breakOutVol)
 
@@ -245,7 +246,7 @@ class InvWindow(QMainWindow, form_class):
         log.logger.debug("$$$$$$$$$ UI 종료함 $$$$$$$$$$$$$")
         self.eocr.eocrExit()
         #self.eocr.join()
-        time.sleep(3)
+        time.sleep(1)
 
         self.deleteLater()
 

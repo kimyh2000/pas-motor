@@ -46,6 +46,7 @@ class CEOCRTest(threading.Thread):
         threading.Thread.__init__(self)
         self.__suspend = True
         self.__exit = False
+        self.motorDirection = 'F'
         self.motorFreq = 0.0
         self.breakVoltage = 0.0
         # Modbus initialize
@@ -71,7 +72,7 @@ class CEOCRTest(threading.Thread):
                 currentIL1 = self.client.read_holding_registers(522, 2)
                 currentIL2 = self.client.read_holding_registers(524, 2)
                 currentIL3 = self.client.read_holding_registers(526, 2)
-                eocrLogger.debug("[M_Frq, B_Vol, Cur_L1,L2,L3],{0},{1},{2},{3},{4}".format(self.motorFreq, self.breakVoltage, currentIL1, currentIL2, currentIL3))
+                eocrLogger.debug("[M_D,M_Frq, B_Vol, Cur_L1,L2,L3],{0},{1},{2},{3},{4},{5}".format(self.motorDirection, self.motorFreq, self.breakVoltage, currentIL1, currentIL2, currentIL3))
             
                 time.sleep(0.1)
  
@@ -79,7 +80,8 @@ class CEOCRTest(threading.Thread):
             if self.__exit:
                 break
 
-    def setMotorFreq(self, freq):
+    def setMotorInfo(self, dir, freq):
+        self.motorDirection = dir
         self.motorFreq = freq
 
     def setBreakVoltage(self, voltage):
