@@ -57,9 +57,13 @@ class InvWindow(QMainWindow, form_class):
 
         data = "Accelation time is {0}".format(self.inveter.accelTime)
         self.textEdit_InvInfo.append(data)
+        self.lineEdit_AccTime.setText(str(self.inveter.accelTime))
+        self.invAccTime = self.inveter.accelTime
 
         data = "Decelation time is {0}".format(self.inveter.decelTime)
         self.textEdit_InvInfo.append(data)
+        self.lineEdit_DecTime.setText(str(self.inveter.decelTime))
+        self.invDecTime = self.inveter.decelTime
 
         #data = "Output Frequency is {0}".format(self.inveter.outputFreq)
         #self.textEdit_InvInfo.append(data)
@@ -102,11 +106,11 @@ class InvWindow(QMainWindow, form_class):
         self.lineEdit_AccTime.setAlignment(Qt.AlignRight)
         self.lineEdit_AccTime.setValidator(QIntValidator(0, 6000))
         self.lineEdit_AccTime.editingFinished.connect(self.textChanged_AccTime)
-        self.lineEdit_AccTime.setText("5")
+        #self.lineEdit_AccTime.setText("5")
 
         # Edit decelation time
         self.lineEdit_DecTime.setAlignment(Qt.AlignRight)
-        self.lineEdit_DecTime.setText("10")
+        #self.lineEdit_DecTime.setText("10")
         self.lineEdit_DecTime.setValidator(QIntValidator(0, 6000))
         self.lineEdit_DecTime.editingFinished.connect(self.textChanged_DecTime)
 
