@@ -5,9 +5,11 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5 import uic
+import time
 
 import inverter as inv
 import nrtgt100 as nrt
+import eocr
 
 #import inverterSim as invSim
 
@@ -23,6 +25,9 @@ class InvWindow(QMainWindow, form_class):
     def initializeDevice(self):
         self.inveter = inv.CInverter('COM5')
         self.nrtGT100 = nrt.CNRTGT100(0, 'COM6')
+        self.eocr = eocr.CEOCRTest()
+        self.eocr.daemon = True
+        self.eocr.start()
         self.updateInverterStatus()
 
     def updateInverterStatus(self):
@@ -158,6 +163,9 @@ class InvWindow(QMainWindow, form_class):
     def btnClicked_FrontRun(self):
         log.logger.debug("btnClicked_FrontRun : Command is FRONT RUN")
         self.inveter.runMotor(True)
+        self.eocr.setMotorFreq(self.invCommandFraq / 100)
+        self.eocr.setBreakVoltage(self.breakOutVol / 10)
+        self.eocr.eocrResume()
 
         self.pushButton_FrontRun.setEnabled(False)
         self.pushButton_BackRun.setEnabled(False)       
@@ -165,6 +173,9 @@ class InvWindow(QMainWindow, form_class):
     def btnClicked_BackRun(self):
         log.logger.debug("btnClicked_FrontRun : Command is BACK RUN")
         self.inveter.runMotor(False)
+        self.eocr.setMotorFreq(self.invCommandFraq / 100)
+        self.eocr.setBreakVoltage(self.breakOutVol / 10)
+        self.eocr.eocrResume()
 
         self.pushButton_FrontRun.setEnabled(False)
         self.pushButton_BackRun.setEnabled(False)       
@@ -173,6 +184,7 @@ class InvWindow(QMainWindow, form_class):
     def btnClicked_Stop(self):
         log.logger.debug("btnClicked_Stop : Command is motor STOP")
         self.inveter.motorStop()
+        self.eocr.eocrSuspend()
 
         self.pushButton_FrontRun.setEnabled(True)
         self.pushButton_BackRun.setEnabled(True)       
@@ -180,6 +192,7 @@ class InvWindow(QMainWindow, form_class):
     def btnClicked_EMGStop(self):
         log.logger.debug("btnClicked_EMGStop : Command is motor FEEE RUN STOP")
         self.inveter.motorStop(True)
+        self.eocr.eocrSuspend()        
 
         self.pushButton_FrontRun.setEnabled(True)
         self.pushButton_BackRun.setEnabled(True)       
@@ -208,7 +221,8 @@ class InvWindow(QMainWindow, form_class):
         pass
         
     def btnClicked_BreakStop(self):
-        log.logger.debug("btnClicked_BreakStop"")
+        log.logger.debug("btnClicked_BreakStop")
+        self.breakOutVol = 0
         self.nrtGT100.sendRequest(True, False, 0)
         
     def btnClicked_BreakRun(self):
@@ -227,9 +241,17 @@ class InvWindow(QMainWindow, form_class):
     def btnClicked_Exit(self):
         pass
 
+    def closeEvent(self, event):
+        log.logger.debug("$$$$$$$$$ UI 종료함 $$$$$$$$$$$$$")
+        self.eocr.eocrExit()
+        #self.eocr.join()
+        time.sleep(3)
+
+        self.deleteLater()
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     myWindow = InvWindow()
     myWindow.show()
-    app.exec_()   
+    sys.exit(app.exec_())   
