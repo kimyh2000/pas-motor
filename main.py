@@ -30,6 +30,7 @@ class InvWindow(QMainWindow, form_class):
         self.eocr.start()
         self.updateInverterStatus()
         self.btnClicked_ChangeFreq()
+        self.btnClicked_ChangeOutVoltage()
 
     def updateInverterStatus(self):
         self.inveter.getInverterStatus()

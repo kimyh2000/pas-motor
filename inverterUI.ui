@@ -356,12 +356,12 @@
      <rect>
       <x>241</x>
       <y>500</y>
-      <width>21</width>
+      <width>91</width>
       <height>31</height>
      </rect>
     </property>
     <property name="text">
-     <string>V</string>
+     <string>V (0 ~ 24.0)</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
