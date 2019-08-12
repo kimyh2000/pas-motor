@@ -49,7 +49,7 @@ class CNRTGT100:
     # Write PWM Data to Device
     #
     #
-    def sendRequest(self, commandType, runCommand, outPWM = 0):
+    def sendRequestOld(self, commandType, runCommand, outPWM = 0):
         log.logger.debug("CNRTGT100 sendRequest start {0}, {1}".format(commandType, outPWM))
 
         # index 0 ~ 7
@@ -65,14 +65,14 @@ class CNRTGT100:
         dataString2 += str(self.deviceID)
 
         # index 10 ~ 12
-        if commandType: # True = Command
+        if commandType: # True = Command (RUN/STOP)
             if runCommand :
-                dataString2 += '1'
+                dataString2 += '1'  # RUN
             else:
-                dataString2 += '0'    
+                dataString2 += '0'  # STOP    
             #outPWM = 123
             dataString2 += '{:02x}'.format(outPWM)
-        else:
+        else:  
             dataString2 += '000'
             
         # index 13 ~ 19
@@ -105,9 +105,74 @@ class CNRTGT100:
         #    self.getMonitoringResponse()
 
         log.logger.debug("CNrtGT100 Response end")
-        
+    
+    #    
+    # Naretech V2.3 Protocol 변경에 따라 수정함
+    #     
 
-    def getCommandResponse(self, BytesToRead = 14):    
+
+
+    def sendRequest(self, commandType, runCommand = -1, outPWM = 0):
+        log.logger.debug("CNRTGT100 sendRequest start {0}, {1}".format(commandType, outPWM))
+
+        stx = '\x02'
+        etx = '\x03'
+
+        # index 0
+        dataString = stx
+        # index 1
+        dataString += str(self.deviceID)
+
+        if commandType == 'W': # Write
+            # index 2,3
+            dataString += 'WX' 
+            # index 4, 5, 6
+            if runCommand == 1:     # Command RUN
+                dataString += '010'
+            elif runCommand == 0:   # Command STOP
+                dataString += '000'
+            elif runCommand == -1:  # Voltage Setting
+                dataString += '1'
+                # 정수를 대문자 아스키 값으로 변경하여 저장
+                dataString += '{:02X}'.format(outPWM)
+                #dataString += '{:02X}'.format(outPWM)[0]
+                #dataString += '{:02X}'.format(outPWM)[1]
+            # index 7                
+            dataString += etx        
+        else: # Read
+            # index 2, 3 
+            dataString +='RX'
+            # index 4, 5, 6, 7
+            dataString += '0000'
+            # index 8
+            dataString += etx
+
+         log.logger.debug(dataString)
+        
+        # BCC Checksum
+        # index 20, 21
+        bcc = self.bccCheckSum(dataString)     
+        dataString += '{:02x}'.format(bcc)
+        log.logger.debug(dataString)
+                
+        self.ser.write(bytes(dataString.encode()))
+        
+        log.logger.debug("CNrtGT100 sendRequest end {0}".format(outPWM))
+
+        ####
+        #datax = [0x25, 0x47, 0x54, 0x31, 0x30, 0x30, 0x53, 0x23, 0x4d, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x37, 0x44, 0x0d, 0x0a]
+        #log.logger.debug(datax)
+        #self.ser.write(bytearray(datax))
+        
+        ###
+        #if commandType: # True = Command data
+        #    self.getCommandResponse()
+        #else:
+        #    self.getMonitoringResponse()
+
+        log.logger.debug("CNrtGT100 Response end")
+
+    def getCommandResponse(self, BytesToRead = 8):    
         res = 'OK'
         
         readData = self.ser.read(BytesToRead)
@@ -247,3 +312,15 @@ class CNRTGT100:
         log.logger.debug(" Final BCC is {0:x}, {1}".format(bcc, bcc))
 
         return bcc
+
+    def run(self):
+        self.sendRequest("W", 1) 
+
+    def stop(self):
+        self.sendRequest("W", 0)
+
+    def setVoltage(self, voltage):
+        self.sendRequest("W", -1, voltage)
+
+    def getStatus(self):
+        self.sendRequest("R")

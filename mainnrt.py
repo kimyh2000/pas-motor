@@ -15,13 +15,13 @@ def run():
     while True:
         menu = print_menu()
         if menu == 1:
-            nrtGT100.sendRequest(False, 0)
-        elif menu == 2: # Start
-            nrtGT100.sendRequest(True, True, 235)  #23.5 V
+            nrtGT100.getStatus()
+        elif menu == 2: # Set Voltage
+            nrtGT100.setVoltage(166) #16.6V
         elif menu == 3: # Start
-            nrtGT100.sendRequest(True, True, 179) #
+            nrtGT100.run()
         elif menu == 4: # Stop
-            nrtGT100.sendRequest(True, False, 179) #
+            nrtGT100.stop()
         elif menu == 4:
             break
 
@@ -31,4 +31,4 @@ if __name__ == "__main__":
 #    invThread.daemon = True
 #    invThread.start()
 
-    run()       
+    run()        
