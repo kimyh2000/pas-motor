@@ -135,8 +135,7 @@ class CNRTGT100:
                 dataString += '1'
                 # 정수를 대문자 아스키 값으로 변경하여 저장
                 dataString += '{:02X}'.format(outPWM)
-                #dataString += '{:02X}'.format(outPWM)[0]
-                #dataString += '{:02X}'.format(outPWM)[1]
+
             # index 7                
             dataString += etx        
         else: # Read
@@ -147,28 +146,18 @@ class CNRTGT100:
             # index 8
             dataString += etx
 
-         log.logger.debug(dataString)
+        log.logger.debug(dataString)
         
         # BCC Checksum
         # index 20, 21
         bcc = self.bccCheckSum(dataString)     
-        dataString += '{:02x}'.format(bcc)
+        #dataString += '{:02x}'.format(bcc)
+        dataString += bcc
         log.logger.debug(dataString)
-                
+
         self.ser.write(bytes(dataString.encode()))
         
         log.logger.debug("CNrtGT100 sendRequest end {0}".format(outPWM))
-
-        ####
-        #datax = [0x25, 0x47, 0x54, 0x31, 0x30, 0x30, 0x53, 0x23, 0x4d, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x37, 0x44, 0x0d, 0x0a]
-        #log.logger.debug(datax)
-        #self.ser.write(bytearray(datax))
-        
-        ###
-        #if commandType: # True = Command data
-        #    self.getCommandResponse()
-        #else:
-        #    self.getMonitoringResponse()
 
         log.logger.debug("CNrtGT100 Response end")
 
@@ -311,7 +300,7 @@ class CNRTGT100:
 
         log.logger.debug(" Final BCC is {0:x}, {1}".format(bcc, bcc))
 
-        return bcc
+        return chr(bcc)
 
     def run(self):
         self.sendRequest("W", 1) 
@@ -320,6 +309,7 @@ class CNRTGT100:
         self.sendRequest("W", 0)
 
     def setVoltage(self, voltage):
+        log.logger.debug(" Voltage is {0}, {1}".format(voltage, type(voltage)))
         self.sendRequest("W", -1, voltage)
 
     def getStatus(self):

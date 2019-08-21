@@ -19,12 +19,13 @@ class InvWindow(QMainWindow, form_class):
     def __init__(self):
         super().__init__()
         self.setupUi(self)          # UI Wiget의 생성 및 바인딩을 수행한다. 
+        self.motorDirection = 'F'       
         self.initializeUiSignal()   # UI Wiget의 Signal / Slot 을 설정한다.
         self.initializeDevice()     # Comm Port 초기화 및 Inverter의 상태를 읽어온다.
         
     def initializeDevice(self):
-        self.inveter = inv.CInverter('COM5')
-        self.nrtGT100 = nrt.CNRTGT100(0, 'COM6')
+        self.inveter = inv.CInverter('COM4')
+        self.nrtGT100 = nrt.CNRTGT100(1, 'COM5')
         self.eocr = eocr.CEOCRTest()
         self.eocr.daemon = True
         self.eocr.start()
@@ -169,8 +170,11 @@ class InvWindow(QMainWindow, form_class):
     def btnClicked_FrontRun(self):
         log.logger.debug("btnClicked_FrontRun : Command is FRONT RUN")
         self.inveter.runMotor(True)
-        self.eocr.setMotorInfo('F', self.invCommandFraq / 100)
-        self.eocr.setBreakVoltage(self.breakOutVol / 10)
+        self.motorDirection = 'F'
+
+        self.eocr.setMotorBreakInfo(self.motorDirection, self.invCommandFraq / 100, self.breakOutVol / 10)
+        #self.eocr.setMotorInfo('F', self.invCommandFraq / 100)
+        #self.eocr.setBreakVoltage(self.breakOutVol / 10)
         self.eocr.eocrResume()
 
         self.pushButton_FrontRun.setEnabled(False)
@@ -179,8 +183,11 @@ class InvWindow(QMainWindow, form_class):
     def btnClicked_BackRun(self):
         log.logger.debug("btnClicked_FrontRun : Command is BACK RUN")
         self.inveter.runMotor(False)
-        self.eocr.setMotorInfo('R', self.invCommandFraq / 100)
-        self.eocr.setBreakVoltage(self.breakOutVol / 10)
+        self.motorDirection = 'R'
+
+        self.eocr.setMotorBreakInfo(self.motorDirection, self.invCommandFraq / 100, self.breakOutVol / 10)
+        #self.eocr.setMotorInfo('R', self.invCommandFraq / 100)
+        #self.eocr.setBreakVoltage(self.breakOutVol / 10)
         self.eocr.eocrResume()
 
         self.pushButton_FrontRun.setEnabled(False)
@@ -211,6 +218,8 @@ class InvWindow(QMainWindow, form_class):
     def btnClicked_ChangeFreq(self):
         log.logger.debug("btnClicked_ChangeFreq : Command Frequency is {0:d}".format(self.invCommandFraq))
         self.inveter.sendParameter('CommandFreq', self.invCommandFraq)
+        self.eocr.setMotorBreakInfo(self.motorDirection, self.invCommandFraq / 100, self.breakOutVol / 10)
+
 
     def btnClicked_SetAccelTime(self):
         log.logger.debug("btnClicked_SetAccelTime : Acceleation time is {0:d}".format(self.invAccTime))
@@ -228,20 +237,22 @@ class InvWindow(QMainWindow, form_class):
         
     def btnClicked_BreakStop(self):
         log.logger.debug("btnClicked_BreakStop")
-        self.breakOutVol = 0
-        self.nrtGT100.sendRequest(True, False, 0)
+        #self.breakOutVol = 0
+        self.nrtGT100.stop()
         
     def btnClicked_BreakRun(self):
         strValue = self.lineEdit_OutVol.text()
         self.breakOutVol = int(float(self.lineEdit_OutVol.text()) * 10)
         log.logger.debug("btnClicked_BreakRun : Command Voltage is {0:d}".format(self.breakOutVol))
-        self.nrtGT100.sendRequest(True, True, self.breakOutVol)
-    
+        self.nrtGT100.setVoltage(self.breakOutVol)
+        self.eocr.setMotorBreakInfo(self.motorDirection, self.invCommandFraq / 100, self.breakOutVol / 10)
+  
     def btnClicked_ChangeOutVoltage(self):
         strValue = self.lineEdit_OutVol.text()
         self.breakOutVol = int(float(self.lineEdit_OutVol.text()) * 10)
         log.logger.debug("btnClicked_ChangeOutVoltage : Command Voltage is {0:d}".format(self.breakOutVol))
-        self.nrtGT100.sendRequest(True, True, self.breakOutVol)
+        self.nrtGT100.setVoltage(self.breakOutVol)
+        self.eocr.setMotorBreakInfo(self.motorDirection, self.invCommandFraq / 100, self.breakOutVol / 10)
 
         
     def btnClicked_Exit(self):
